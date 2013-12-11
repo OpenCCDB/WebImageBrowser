@@ -1,0 +1,2 @@
+# Module edu.ucsd.ncmir.WIB.SLASHWorker.SLASHWorker
+# RPC service class, partial path of RPC policy file

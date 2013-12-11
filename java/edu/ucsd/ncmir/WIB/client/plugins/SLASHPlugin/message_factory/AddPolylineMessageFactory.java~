@@ -1,0 +1,82 @@
+package edu.ucsd.ncmir.WIB.client.plugins.SLASHPlugin.message_factory;
+
+import edu.ucsd.ncmir.WIB.client.core.components.AbstractInteractionMessageFactory;
+import edu.ucsd.ncmir.WIB.client.core.message.Message;
+import edu.ucsd.ncmir.WIB.client.core.messages.AbstractActivationMessage;
+import edu.ucsd.ncmir.WIB.client.plugins.SLASHPlugin.messages.AddPolylineActivationMessage;
+import edu.ucsd.ncmir.WIB.client.plugins.SLASHPlugin.messages.AddPolylineCompleteMessage;
+import edu.ucsd.ncmir.WIB.client.plugins.SLASHPlugin.messages.AddPolylineDrawMessage;
+import edu.ucsd.ncmir.WIB.client.plugins.SLASHPlugin.messages.AddPolylineSetupMessage;
+import edu.ucsd.ncmir.WIB.client.plugins.SLASHPlugin.messages.ChooseObjectMessage;
+
+/**
+ *
+ * @author spl
+ */
+public class AddPolylineMessageFactory
+    extends AbstractInteractionMessageFactory
+
+{
+
+    private final AddPolylineSetupMessage _dsm = new AddPolylineSetupMessage();
+    private final AddPolylineCompleteMessage _dcm = new AddPolylineCompleteMessage();
+    private final AddPolylineDrawMessage _dm = new AddPolylineDrawMessage();
+
+    @Override
+    public Message getMouseDownMessage()
+
+    {
+
+        return this._dsm;
+
+    }
+
+    @Override
+    public Message getMouseUpMessage()
+
+    {
+
+        return this._dcm;
+
+    }
+
+    @Override
+    public Message getMouseMoveMessage()
+
+    {
+
+        return this._dm;
+
+    }
+
+    private final ChooseObjectMessage _choose_object_message =
+	new ChooseObjectMessage();
+
+    @Override
+    public Message getControlAndMouseDownMessage()
+
+    {
+
+        return this._choose_object_message;
+
+    }
+
+    @Override
+    public String toString()
+
+    {
+
+        return "Add Trace to Object";
+
+    }
+
+    @Override
+    public AbstractActivationMessage activateMessage()
+
+    {
+
+        return new AddPolylineActivationMessage();
+
+    }
+
+}

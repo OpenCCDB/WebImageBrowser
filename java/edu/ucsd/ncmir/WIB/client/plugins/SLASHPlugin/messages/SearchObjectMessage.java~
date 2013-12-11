@@ -1,0 +1,44 @@
+package edu.ucsd.ncmir.WIB.client.plugins.SLASHPlugin.messages;
+
+import edu.ucsd.ncmir.WIB.client.core.message.Message;
+
+/**
+ *
+ * @author spl
+ */
+public class SearchObjectMessage 
+    extends Message
+
+{
+    
+    private final String _name;
+
+    public SearchObjectMessage( String name )
+        
+    {
+        
+        this._name = name;
+        
+    }
+
+    private boolean _found;
+    
+    public boolean found()
+        
+    {
+        
+        return this._found;
+        
+    }
+
+    public String getName()
+    {
+        throw new UnsupportedOperationException( "Not supported yet." );
+    }
+
+    public void setStatus( boolean ok )
+    {
+        throw new UnsupportedOperationException( "Not supported yet." );
+    }
+
+}

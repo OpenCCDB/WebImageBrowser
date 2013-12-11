@@ -1,0 +1,591 @@
+package edu.ucsd.ncmir.WIB.client.plugins.SLASHPlugin;
+
+import com.google.gwt.core.client.JsArray;
+import com.google.gwt.core.client.JsArrayInteger;
+import com.google.gwt.core.client.JsArrayNumber;
+import com.google.gwt.webworker.client.ErrorEvent;
+import com.google.gwt.webworker.client.ErrorHandler;
+import com.google.gwt.webworker.client.MessageEvent;
+import com.google.gwt.webworker.client.MessageHandler;
+import com.google.gwt.webworker.client.Worker;
+import com.google.gwt.xml.client.Element;
+import edu.ucsd.ncmir.WIB.SLASHGeometryWorker.client.SLASHGeometryWorkerReturnData;
+import edu.ucsd.ncmir.WIB.SLASHGeometryWorker.worker.SLASHGeometryWorker;
+import edu.ucsd.ncmir.WIB.client.core.messages.SetPlaneSliderPositionMessage;
+import edu.ucsd.ncmir.WIB.client.core.messages.UpdatePlanePositionMessage;
+import edu.ucsd.ncmir.WIB.client.core.render3d.renderable.Renderable;
+import edu.ucsd.ncmir.WIB.client.core.render3d.renderable.indexed_triangle_mesh.IndexedTriangleMesh;
+import edu.ucsd.ncmir.WIB.client.core.render3d.renderable.triangle_mesh.ContourMesh;
+import edu.ucsd.ncmir.WIB.client.core.request.AbstractXMLRequestCallback;
+import edu.ucsd.ncmir.WIB.client.core.request.HTTPRequest;
+import edu.ucsd.ncmir.WIB.client.debug.Debug;
+import edu.ucsd.ncmir.WIB.client.plugins.SLASHPlugin.messages.DimensionRequestMessage;
+import edu.ucsd.ncmir.WIB.client.plugins.SLASHPlugin.messages.SpinnerUpdateMessage;
+import edu.ucsd.ncmir.WIB.client.plugins.SLASHPlugin.messages.ThreeDGeometryUpdateMessage;
+import edu.ucsd.ncmir.spl.XMLUtil.XML;
+import gwt.g3d.client.gl2.array.Float32Array;
+import gwt.g3d.client.gl2.array.Uint16Array;
+import java.util.ArrayList;
+import java.util.HashMap;
+
+/**
+ *
+ * @author spl
+ */
+public class SLASHAnnotationSpinnerInfo
+    extends AbstractXMLRequestCallback
+
+{
+
+    private final String _name;
+    private final int _id;
+
+    SLASHAnnotationSpinnerInfo( String name, int id )
+
+    {
+
+	this._name = name;
+	this._id = id;
+
+    }
+
+    public void update()
+
+    {
+
+	HTTPRequest.get( "cgi-bin/SLASHdb.pl?" +
+			 "request=get_annotation_z_levels&" +
+			 "id=" + this._id,
+			 this );
+        if ( this._is_3d_enabled )
+            this.updateGeometry();
+
+    }
+
+    void updateGeometry()
+
+    {
+
+	Worker w;
+
+	w = Worker.createNamedWorker( SLASHGeometryWorker.NAME );
+	ContourRequestHandler crh = new ContourRequestHandler( this );
+	w.setOnError( crh );
+	w.setOnMessage( crh );
+	w.postMessage( "cgi-bin/SLASHdb.pl?" +
+		       "request=get_all_contours&" +
+		       "id=" + this._id );
+
+	DimensionRequestMessage drm = new DimensionRequestMessage();
+	drm.send();
+
+	w = Worker.createNamedWorker( SLASHGeometryWorker.NAME );
+	SurfaceRequestHandler srh = new SurfaceRequestHandler( this );
+	w.setOnError( srh );
+	w.setOnMessage( srh );
+	w.postMessage( "cgi-bin/SLASHdb.pl?" +
+		       "request=get_surface&" +
+		       "height=" + drm.getHeight() + "&" +
+		       "id=" + this._id );
+
+    }
+
+    private boolean _is_3d_enabled = false;
+
+    public boolean is3DEnabled()
+    {
+
+	return this._is_3d_enabled;
+
+    }
+
+    public void enable3D( boolean enable )
+
+    {
+
+	if ( this._is_3d_enabled = enable )
+	    this.updateGeometry();
+	else
+	    new ThreeDGeometryUpdateMessage().send( this );
+
+    }
+
+    private boolean _surface_pending = false;
+    private boolean _is_surface_enabled = false;
+
+    public boolean isSurfaceEnabled()
+    {
+
+	return this._is_surface_enabled;
+
+    }
+
+    void enableSurface( boolean enable )
+
+    {
+
+	if ( enable && ( this._itm != null ) )
+	    this._is_surface_enabled = enable;
+	else if ( enable )
+	    this._surface_pending = true;
+	else
+	    this._is_surface_enabled = false;
+	new ThreeDGeometryUpdateMessage().send( this );
+
+    }
+
+    private static abstract class SGWRDRequestHandler
+	implements ErrorHandler,
+		   MessageHandler
+
+    {
+
+	private final SLASHAnnotationSpinnerInfo _sasi;
+
+	SGWRDRequestHandler( SLASHAnnotationSpinnerInfo sasi )
+
+	{
+
+	    this._sasi = sasi;
+
+	}
+
+        @Override
+        public void onError( ErrorEvent event )
+        {
+
+	    Debug.message( "Worker error!",
+			   event.getFilename(),
+			   event.getLineNumber(),
+			   event.getMessage() );
+
+        }
+
+	@Override
+        public void onMessage( MessageEvent event )
+
+        {
+
+	    SLASHGeometryWorkerReturnData sgwrd =
+		( SLASHGeometryWorkerReturnData ) event.getDataAsJSO();
+
+	    if ( sgwrd.getType() == 1 )
+		this.handler( this._sasi, sgwrd );
+
+        }
+	protected abstract void handler( SLASHAnnotationSpinnerInfo sasi,
+					 SLASHGeometryWorkerReturnData sgwrd );
+
+    }
+
+    private static class ContourRequestHandler
+	extends SGWRDRequestHandler
+
+    {
+
+	ContourRequestHandler( SLASHAnnotationSpinnerInfo sasi )
+
+	{
+
+	    super( sasi );
+
+	}
+
+        @Override
+	public void handler( SLASHAnnotationSpinnerInfo sasi,
+			     SLASHGeometryWorkerReturnData sgwrd )
+
+        {
+
+	    sasi.handleContours( sgwrd );
+
+        }
+
+    }
+
+    private static class SurfaceRequestHandler
+        extends SGWRDRequestHandler
+
+    {
+
+	SurfaceRequestHandler( SLASHAnnotationSpinnerInfo sasi )
+
+	{
+
+	    super( sasi );
+
+	}
+
+        @Override
+	public void handler( SLASHAnnotationSpinnerInfo sasi,
+			     SLASHGeometryWorkerReturnData sgwrd )
+
+        {
+
+	    sasi.handleSurface( sgwrd );
+
+        }
+
+    }
+
+    private final ArrayList<ContourMesh> _outlines =
+	new ArrayList<ContourMesh>();
+
+    public ContourMesh[] getGeometry()
+
+    {
+
+	return this._outlines.toArray( new ContourMesh[0] );
+
+    }
+
+    private int _red = 0xff;
+    private int _green = 0xff;
+    private int _blue = 0xff;
+
+    private void handleContours( SLASHGeometryWorkerReturnData sgwrd )
+
+    {
+
+	int color = sgwrd.getColor();
+
+	DimensionRequestMessage drm = new DimensionRequestMessage();
+	drm.send();
+
+	int hm1 = drm.getHeight() - 1;
+
+	JsArrayInteger z_index = sgwrd.getZIndex();
+	JsArray<JsArrayInteger> types = sgwrd.getTypes();
+	JsArray<JsArray<JsArrayNumber>> contourx = sgwrd.getContourX();
+	JsArray<JsArray<JsArrayNumber>> contoury = sgwrd.getContourY();
+
+	this._red = ( color >> 16 ) & 0x0000ff;
+	this._green = ( color >> 8 ) & 0x0000ff;
+	this._blue = color & 0x0000ff;
+
+	int zmin = Integer.MAX_VALUE;
+	int zmax = -Integer.MAX_VALUE;
+
+	HashMap<Integer,ArrayList<double[][]>> list =
+	    new HashMap<Integer,ArrayList<double[][]>>();
+
+	for ( int zi = 0; zi < z_index.length(); zi++ ) {
+
+	    int z = z_index.get( zi );
+	    JsArrayInteger type_list = types.get( zi );
+	    JsArray<JsArrayNumber> cont_list_x = contourx.get( zi );
+	    JsArray<JsArrayNumber> cont_list_y = contoury.get( zi );
+
+	    if ( zmin > z )
+		zmin = z;
+	    if ( zmax < z )
+		zmax = z;
+
+	    ArrayList<double[][]> dlist = list.get( z );
+
+	    if ( dlist == null )
+		list.put( z, dlist = new ArrayList<double[][]>() );
+
+	    for ( int i = 0; i < type_list.length(); i++ ) {
+
+		int type = type_list.get( i );
+		JsArrayNumber x = cont_list_x.get( i );
+		JsArrayNumber y = cont_list_y.get( i );
+
+		int l = x.length() + type;
+
+		double[][] xyl = new double[l][2];
+
+		for ( int j = 0; j < x.length(); j++ ) {
+
+		    xyl[j][0] = x.get( j );
+		    xyl[j][1] = hm1 - y.get( j );
+
+		}
+		if ( type == 1 ) {
+
+		    xyl[l - 1][0] = xyl[0][0];
+		    xyl[l - 1][1] = xyl[0][1];
+
+		}
+
+		dlist.add( xyl );
+
+	    }
+
+	}
+	this.createOutline( zmin, zmax, list );
+	new ThreeDGeometryUpdateMessage().send( this );
+
+    }
+
+    private void createOutline( int zmin, int zmax,
+				HashMap<Integer,ArrayList<double[][]>> list )
+
+    {
+
+	this._outlines.clear();
+
+        float r = ( float ) ( this._red / 255.0 );
+        float g = ( float ) ( this._green / 255.0 );
+        float b = ( float ) ( this._blue / 255.0 );
+
+	for ( int z = zmin; z <= zmax; z++ ) {
+
+	    ArrayList<double[][]> dlist = list.get( z );
+
+	    if ( dlist != null ) {
+
+		for ( double[][] xy : dlist ) {
+
+		    float[] points = new float[xy.length * 3];
+		    float[] normals = new float[xy.length * 3];
+		    float[] colors = new float[xy.length * 3];
+
+		    for ( int i = 0, I = 0;
+			  i < xy.length;
+			  i++, I += 3 ) {
+
+			points[I + 0] = ( float ) xy[i][0];
+			points[I + 1] = ( float ) xy[i][1];
+			points[I + 2] = ( float ) z;
+
+			normals[I + 0] = ( float ) 0;
+			normals[I + 1] = ( float ) 0;
+			normals[I + 2] = ( float ) 0;
+
+			colors[I + 0] = r;
+			colors[I + 1] = g;
+			colors[I + 2] = b;
+
+		    }
+		    this._outlines.add( new ContourMesh( points,
+							 normals,
+							 colors ) );
+
+		}
+
+	    }
+
+	}
+
+    }
+
+    private IndexedTriangleMesh[] _itm = null;
+
+    public Renderable[] getMeshes()
+
+    {
+
+	return this._itm;
+
+    }
+
+    private void handleSurface( SLASHGeometryWorkerReturnData sgwrd )
+
+    {
+
+	JsArray<JsArrayNumber> plist = sgwrd.getPoints();
+	JsArray<JsArrayNumber> nlist = sgwrd.getNormals();
+	JsArray<JsArrayInteger> ilist = sgwrd.getIndices();
+
+	float r = ( float ) ( this._red / 255.0 );
+	float g = ( float ) ( this._green / 255.0 );
+	float b = ( float ) ( this._blue / 255.0 );
+
+	this._itm = new IndexedTriangleMesh[plist.length()];
+	for ( int m = 0; m < plist.length(); m++ )
+	    this._itm[m] =
+		new IndexedTriangleMesh( Float32Array.create( plist.get( m ) ),
+					 Float32Array.create( nlist.get( m ) ),
+					 Uint16Array.create( ilist.get( m ) ),
+					 r, g, b );
+
+	if ( this._surface_pending || this._is_surface_enabled ) {
+
+	    this._is_surface_enabled = true;
+	    this._surface_pending = false;
+	    new ThreeDGeometryUpdateMessage().send( this );
+
+	}
+
+    }
+
+    /**
+     * @return the object's name
+     */
+
+    public String getName()
+
+    {
+
+        return this._name;
+
+    }
+
+    /**
+     * @return the object's id
+     */
+
+    public int getAnnotationID()
+
+    {
+
+        return this._id;
+
+    }
+
+    @Override
+    public boolean equals( Object o )
+
+    {
+
+	boolean equals = false;
+
+	if ( ( o != null ) && ( o instanceof SLASHAnnotationSpinnerInfo ) ) {
+
+	    SLASHAnnotationSpinnerInfo oi = ( SLASHAnnotationSpinnerInfo ) o;
+
+	    equals = this._name.equals( oi._name ) && ( this._id == oi._id );
+
+	}
+	return equals;
+
+    }
+
+    @Override
+    public int hashCode()
+
+    {
+
+        int hash = 3;
+
+        hash = 29 * hash + ( this._name != null ? this._name.hashCode() : 0 );
+        hash = 29 * hash + this._id;
+
+        return hash;
+
+    }
+
+    private int[] _z = new int[] { -1 };
+    private int _index = 0;
+
+    @Override
+    protected void handleXMLResponse( Element root )
+
+    {
+
+	if ( root.getAttribute( "status" ).equals( "success" ) ) {
+
+	    Element z_range = XML.find( root, "z_range" );
+
+	    String[] list = XML.extractSubstringsFromElement( z_range, " " );
+
+	    ArrayList<Integer> zlist = new ArrayList<Integer>();
+
+	    zlist.add( Integer.parseInt( list[0] ) );
+
+	    for ( int i = 1; i < list.length; i++ ) {
+
+		int z = Integer.parseInt( list[i] );
+		if ( z != zlist.get( zlist.size() - 1 ) )
+		    zlist.add( z );
+
+	    }
+
+	    Integer[] ilist = zlist.toArray( new Integer[0] );
+	    this._z = new int[ilist.length];
+
+	    for ( int i = 0; i < ilist.length; i++ )
+		this._z[i] = ilist[i];
+
+	    new SpinnerUpdateMessage().send();
+	    if ( this._warp_pending ) {
+
+		int z = this.firstZ();
+
+		new SetPlaneSliderPositionMessage().send( z );
+		new UpdatePlanePositionMessage().send( z );
+		this._warp_pending = false;
+
+	    }
+
+	}
+
+    }
+
+    private boolean _warp_pending = false;
+
+    public void setWarpPending()
+
+    {
+
+	this._warp_pending = true;
+
+    }
+
+    public int previousZ()
+
+    {
+
+	if ( --this._index < 0 )
+	    this._index = 0;
+
+	return this._z[this._index];
+
+    }
+
+    public int nextZ()
+
+    {
+
+	if ( ++this._index >= this._z.length )
+	    this._index = this._z.length - 1;
+
+	return this._z[this._index];
+
+    }
+
+    public int getZMin()
+
+    {
+
+        return this._z[0];
+
+    }
+
+    public int getZMax()
+
+    {
+
+        return this._z[this._z.length - 1];
+
+    }
+
+    /**
+     * @return Minimum <code>z</code> value.
+     */
+
+    public int firstZ()
+
+    {
+
+	this._index = 0;
+        return this._z[this._index];
+
+    }
+
+    /**
+     * @return Maximum <code>z</code> value.
+     */
+
+    public int lastZ()
+
+    {
+
+	this._index = this._z.length - 1;
+        return this._z[this._index];
+
+    }
+
+}

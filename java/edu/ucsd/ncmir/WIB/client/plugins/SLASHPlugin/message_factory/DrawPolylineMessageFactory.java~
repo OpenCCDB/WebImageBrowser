@@ -1,0 +1,68 @@
+package edu.ucsd.ncmir.WIB.client.plugins.SLASHPlugin.message_factory;
+
+import edu.ucsd.ncmir.WIB.client.core.components.AbstractInteractionMessageFactory;
+import edu.ucsd.ncmir.WIB.client.core.message.Message;
+import edu.ucsd.ncmir.WIB.client.core.messages.AbstractActivationMessage;
+import edu.ucsd.ncmir.WIB.client.core.messages.DrawCompleteMessage;
+import edu.ucsd.ncmir.WIB.client.core.messages.DrawMessage;
+import edu.ucsd.ncmir.WIB.client.plugins.SLASHPlugin.messages.DrawSingletonPolylineActivationMessage;
+import edu.ucsd.ncmir.WIB.client.plugins.SLASHPlugin.messages.DrawPolylineSetupMessage;
+
+/**
+ *
+ * @author spl
+ */
+public class DrawPolylineMessageFactory
+    extends AbstractInteractionMessageFactory
+
+{
+
+    private final DrawPolylineSetupMessage _dsm = new DrawPolylineSetupMessage();
+    private final DrawCompleteMessage _dcm = new DrawCompleteMessage();
+    private final DrawMessage _dm = new DrawMessage();
+
+    @Override
+    public Message getMouseDownMessage()
+
+    {
+
+        return this._dsm;
+
+    }
+
+    @Override
+    public Message getMouseUpMessage()
+
+    {
+
+        return this._dcm;
+
+    }
+
+    @Override
+    public Message getMouseMoveMessage()
+
+    {
+
+        return this._dm;
+
+    }
+
+    @Override
+    public String toString()
+
+    {
+
+        return "Draw Open Object";
+
+    }
+
+    @Override
+    public AbstractActivationMessage activateMessage()
+    {
+
+        return new DrawSingletonPolylineActivationMessage();
+
+    }
+
+}

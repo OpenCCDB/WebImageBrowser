@@ -1,0 +1,22 @@
+attribute vec3 aVertexPosition;
+attribute vec3 aVertexNormal;
+attribute vec3 aVertexColor;
+
+uniform mat4 uMVMatrix;
+uniform mat4 uPMatrix;
+uniform mat3 uNMatrix;
+
+varying vec4 vTransformedNormal;
+varying vec4 vPosition;
+varying vec4 vVertexColor;
+
+void main(void)
+
+{
+
+    vVertexColor = vec4( aVertexColor, 1.0 );
+    vPosition = uMVMatrix * vec4(aVertexPosition, 1.0);
+    gl_Position = uPMatrix * vPosition;
+    vTransformedNormal = vec4( uNMatrix * aVertexNormal, 1.0);
+
+}

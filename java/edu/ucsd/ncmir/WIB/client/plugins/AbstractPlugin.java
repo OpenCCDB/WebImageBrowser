@@ -1,0 +1,386 @@
+package edu.ucsd.ncmir.WIB.client.plugins;
+
+import com.google.gwt.core.client.RunAsyncCallback;
+import com.google.gwt.dom.client.BodyElement;
+import com.google.gwt.dom.client.Document;
+import com.google.gwt.dom.client.Style;
+import com.google.gwt.user.client.Cookies;
+import com.google.gwt.user.client.ui.LayoutPanel;
+import com.google.gwt.user.client.ui.MenuBar;
+import com.google.gwt.user.client.ui.RootLayoutPanel;
+import com.googlecode.mgwt.ui.client.MGWT;
+import com.googlecode.mgwt.ui.client.MGWTSettings;
+import edu.ucsd.ncmir.WIB.client.WIB;
+import edu.ucsd.ncmir.WIB.client.core.DragZoomMessageFactory;
+import edu.ucsd.ncmir.WIB.client.core.PreferencesDialog;
+import edu.ucsd.ncmir.WIB.client.core.ZSliderPanel;
+import edu.ucsd.ncmir.WIB.client.core.components.menu.WIBMenuBar;
+import edu.ucsd.ncmir.WIB.client.core.components.mobile.MobileButtonBar;
+import edu.ucsd.ncmir.WIB.client.core.drawable.PointFactory;
+import edu.ucsd.ncmir.WIB.client.core.image.ImageFactoryInterface;
+import edu.ucsd.ncmir.WIB.client.core.menus.AbstractImageMenu;
+import edu.ucsd.ncmir.WIB.client.core.menus.HelpMenu;
+import edu.ucsd.ncmir.WIB.client.core.menus.ToolsMenu;
+import edu.ucsd.ncmir.WIB.client.core.message.MessageListener;
+import edu.ucsd.ncmir.WIB.client.core.message.MessageManager;
+import edu.ucsd.ncmir.WIB.client.core.messages.UpdateOriginMessage;
+import edu.ucsd.ncmir.WIB.client.core.panel.ApplicationVectorPanel;
+import edu.ucsd.ncmir.WIB.client.core.panel.ControlsPanel;
+import edu.ucsd.ncmir.WIB.client.core.panel.CursorOverlayPanel;
+import edu.ucsd.ncmir.WIB.client.core.panel.DrawingPanel;
+import edu.ucsd.ncmir.WIB.client.core.panel.ImageOverlayPanel;
+import edu.ucsd.ncmir.WIB.client.core.panel.InformationPanel;
+import edu.ucsd.ncmir.WIB.client.core.panel.InteractionPanel;
+import edu.ucsd.ncmir.WIB.client.core.panel.StatusPanel;
+import edu.ucsd.ncmir.WIB.client.core.panel.TileDisplayPanel;
+import edu.ucsd.ncmir.WIB.client.core.panel.TransientVectorOverlayPanel;
+import edu.ucsd.ncmir.WIB.client.debug.Debug;
+import edu.ucsd.ncmir.spl.LinearAlgebra.Quaternion;
+
+/**
+ *
+ * @author spl
+ */
+public abstract class AbstractPlugin
+    implements MessageListener,
+	       RunAsyncCallback
+
+{
+
+    /**
+     * Creates the <code>AbstractPlugin</code> object.
+     */
+    public AbstractPlugin( Class... listeners )
+
+    {
+
+        if ( listeners != null )
+            MessageManager.registerAsListener( this, listeners );
+
+    }
+
+    /**
+     * Starts getMouseUpMessage the plugin.  This must be overridden by a plugin.
+     */
+    public abstract void setupPlugin();
+
+    /**
+     * Called by <code>AbstractPlugin</code> when configuring the user
+     * interface.
+     * @param menu_bar The top-level <code>MenuBar</code> object to be
+     * added to.
+     */
+    protected void configureMenuBar( MenuBar menu_bar )
+
+    {
+
+        // By default, does nothing.
+
+    }
+
+    /**
+     * Called by <code>AbstractPlugin</code> when configuring the user
+     * interface.
+     * @param button_bar The top-level <code>MenuBar</code> object to be
+     * added to.
+     */
+    protected void configureMobileButtonBar( MobileButtonBar button_bar )
+
+    {
+
+        // By default, does nothing.
+
+    }
+
+    protected void initializePreferences()
+
+    {
+
+	// By default, does nothing.
+
+    }
+
+    /**
+     * Constructs a transaction URL.
+     */
+    public abstract String getTransactionURL();
+
+    /**
+     *
+     * @return An <code>ImageFactoryInterface</code>.
+     */
+    public abstract ImageFactoryInterface getImageFactory();
+
+    /**
+     * Generate a control panel object.
+     * @return A control panel.
+     */
+    public abstract ControlsPanel getControlsPanel();
+
+    /**
+     * Generate an image menu object.
+     * @return An image menu.
+     */
+    public abstract AbstractImageMenu getImageMenu();
+
+    /**
+     * Returns the plugin's allowable maximum zoom in exponent.
+     * Usually 1 but may be something else.
+     * @return The maximum zoom in exponent.
+     */
+    public abstract double getMaxZoomIn();
+
+    /**
+     * Returns the allowable zoom delta.  Return Double.MAX_VALUE for
+     * continuous zoom.
+     * @return The allowable zoom delta.
+     */
+    public abstract double getZoomDelta();
+
+    /**
+     * Returns a string containing whatever state information the
+     * plugin considers useful in debugging.
+     * @return The state.
+     */
+    public abstract String getState();
+
+    /**
+     * Initializes or reinitializes dimensions based upon the view
+     * described by the quaternion supplied.
+     * @param quaternion The quaternion
+     */
+    public abstract void initializeDimensions( Quaternion quaternion );
+
+    @Override
+    public final void onSuccess()
+
+    {
+
+	if ( !MGWT.getOsDetection().isDesktop() )
+	    MGWT.applySettings( MGWTSettings.getAppSetting() );
+	this.initializePreferences();
+
+	String background_color =
+	    Cookies.isCookieEnabled() ?
+	    Cookies.getCookie( "background_color" ) : null;
+
+	BodyElement body_element = Document.get().getBody();
+	Style style = body_element.getStyle();
+
+	if ( background_color == null ) {
+
+	    background_color = "#329fd7";
+	    if ( Cookies.isCookieEnabled() )
+		Cookies.setCookie( "background_color", background_color );
+
+	}
+
+	style.setBackgroundColor( background_color );
+
+        String timeout_string =
+	    Cookies.isCookieEnabled() ?
+	    Cookies.getCookie( "timeout" ) : null;
+
+        if ( timeout_string == null )
+            timeout_string = "60";
+
+        WIB.setTimeoutSeconds( Integer.parseInt( timeout_string ) );
+
+	// This needs to be more or less done at the top before
+	// anything else is done to make sure that the PointFactory gets
+	// properly updated at the first broadcast of the origin.
+	// This probably needs to be rethought so that it isn't so
+	// order dependent.
+
+	MessageManager.registerListener( UpdateOriginMessage.class,
+					 new PointFactory() );
+
+	LayoutPanel lp = new LayoutPanel();
+
+	// The order of creation of the panels is somewhat important,
+	// since Messages are sent at various stages of creation and
+	// the ListenerInterface objects need to have been created.
+	// Messing with the order of creation will have unexpected
+	// consequences.
+
+	StatusPanel status_panel = new StatusPanel();
+	InformationPanel object_info_panel = new InformationPanel();
+
+	ZSliderPanel z_panel = new ZSliderPanel();
+
+	ImageOverlayPanel image_overlay_panel = new ImageOverlayPanel();
+
+	CursorOverlayPanel cursor_overlay_panel = new CursorOverlayPanel();
+
+	TransientVectorOverlayPanel vector_overlay_panel =
+	    new TransientVectorOverlayPanel();
+
+	ApplicationVectorPanel app_vec_panel = new ApplicationVectorPanel();
+
+	DrawingPanel drawing_panel = new DrawingPanel();
+
+	InteractionPanel interaction_panel = new InteractionPanel();
+	Debug.init( interaction_panel );
+
+	TileDisplayPanel tile_display_panel = new TileDisplayPanel();
+
+	WIBMenuBar menu_bar = new WIBMenuBar();
+
+	this.configureMenuBar( menu_bar );
+	menu_bar.addItem( "Image", this.getImageMenu() );
+	menu_bar.addItem( "Tools", new ToolsMenu() );
+	menu_bar.addItem( "Help", new HelpMenu() );
+
+	// The order of adding the panels is significant and should
+	// not be messed with, either.  This means YOU!
+
+	if ( MGWT.getOsDetection().isDesktop() ) {
+
+	    lp.add( status_panel );
+	    lp.setWidgetTopHeight( status_panel,
+				   0, Style.Unit.PX,
+				   24, Style.Unit.PX );
+
+	}
+
+	lp.add( tile_display_panel );
+	lp.setWidgetLeftRight( tile_display_panel,
+			       0, Style.Unit.PX,
+			       0, Style.Unit.PX );
+	lp.setWidgetTopBottom( tile_display_panel,
+			       45, Style.Unit.PX,
+			       0, Style.Unit.PX );
+
+	lp.add( image_overlay_panel );
+	lp.setWidgetLeftRight( image_overlay_panel,
+			       0, Style.Unit.PX,
+			       0, Style.Unit.PX );
+	lp.setWidgetTopBottom( image_overlay_panel,
+			       45, Style.Unit.PX,
+			       0, Style.Unit.PX );
+
+	lp.add( app_vec_panel );
+	lp.setWidgetLeftRight( app_vec_panel,
+			       0, Style.Unit.PX,
+			       0, Style.Unit.PX );
+	lp.setWidgetTopBottom( app_vec_panel,
+			       45, Style.Unit.PX,
+			       0, Style.Unit.PX );
+
+	lp.add( vector_overlay_panel );
+	lp.setWidgetLeftRight( vector_overlay_panel,
+			       0, Style.Unit.PX,
+			       0, Style.Unit.PX );
+	lp.setWidgetTopBottom( vector_overlay_panel,
+			       45, Style.Unit.PX,
+			       0, Style.Unit.PX );
+
+	lp.add( drawing_panel );
+	lp.setWidgetLeftRight( drawing_panel,
+			       0, Style.Unit.PX,
+			       0, Style.Unit.PX );
+	lp.setWidgetTopBottom( drawing_panel,
+			       45, Style.Unit.PX,
+			       0, Style.Unit.PX );
+
+	lp.add( cursor_overlay_panel );
+	lp.setWidgetLeftRight( cursor_overlay_panel,
+			       0, Style.Unit.PX,
+			       0, Style.Unit.PX );
+	lp.setWidgetTopBottom( cursor_overlay_panel,
+			       45, Style.Unit.PX,
+			       0, Style.Unit.PX );
+
+	if ( MGWT.getOsDetection().isDesktop() ) {
+
+	    lp.add( object_info_panel );
+	    lp.setWidgetBottomHeight( object_info_panel,
+				      0, Style.Unit.PX,
+				      24, Style.Unit.PX );
+
+	} else {
+
+	    lp.add( status_panel );
+	    lp.setWidgetBottomHeight( status_panel,
+				      0, Style.Unit.PX,
+				      24, Style.Unit.PX );
+
+	}
+
+        if ( !MGWT.getOsDetection().isDesktop() ) {
+
+	    MobileButtonBar button_bar = new MobileButtonBar();
+
+	    this.configureMobileButtonBar( button_bar );
+	    lp.add( button_bar );
+	    lp.setWidgetTopHeight( button_bar,
+	    			   0, Style.Unit.PX,
+	    			   50, Style.Unit.PX );
+
+	}
+	// This panel has to sit on top of the stack in order to catch
+	// all Events.
+
+	lp.add( interaction_panel );
+	lp.setWidgetLeftRight( interaction_panel,
+			       0, Style.Unit.PX,
+			       0, Style.Unit.PX );
+	lp.setWidgetTopBottom( interaction_panel,
+			       45, Style.Unit.PX,
+			       25, Style.Unit.PX );
+
+	lp.add( z_panel );
+	lp.setWidgetLeftRight( z_panel,
+			       5, Style.Unit.PX,
+			       5, Style.Unit.PX );
+	lp.setWidgetBottomHeight( z_panel,
+				  25, Style.Unit.PX,
+				  25, Style.Unit.PX );
+
+        if ( MGWT.getOsDetection().isDesktop() ) {
+
+	    // And this panel has to be even higher, to pop menus.
+
+	    lp.add( menu_bar );
+	    lp.setWidgetTopHeight( menu_bar,
+				   25, Style.Unit.PX,
+				   20, Style.Unit.PX );
+
+        }
+
+	RootLayoutPanel rlp = RootLayoutPanel.get();
+
+	rlp.add( lp );
+
+	rlp.forceLayout();
+
+	this.setupPlugin();
+
+        new DragZoomMessageFactory().activateMessage().send();
+
+    }
+
+    @Override
+    public final void onFailure( Throwable t )
+
+    {
+
+	Debug.traceback( t );
+
+    }
+
+    public void pluginPreferences( PreferencesDialog preferences_dialog )
+
+    {
+
+        // By default does nothing.
+
+    }
+
+    public void acceptPluginPreferences()
+
+    {
+
+    }
+
+}

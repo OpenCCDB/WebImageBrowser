@@ -1,0 +1,169 @@
+package edu.ucsd.ncmir.WIB.client.plugins.SLASHPlugin.dialogs;
+
+import com.google.gwt.user.client.ui.Grid;
+import com.google.gwt.user.client.ui.HTML;
+import edu.ucsd.ncmir.WIB.client.core.components.AcceptCancelButtons;
+import edu.ucsd.ncmir.WIB.client.core.components.AcceptCancelHandler;
+import edu.ucsd.ncmir.WIB.client.core.message.Message;
+import edu.ucsd.ncmir.WIB.client.core.message.MessageListener;
+import edu.ucsd.ncmir.WIB.client.core.message.MessageManager;
+import edu.ucsd.ncmir.WIB.client.core.messages.AbstractActivationMessage;
+import edu.ucsd.ncmir.WIB.client.plugins.SLASHPlugin.Annotation;
+import edu.ucsd.ncmir.WIB.client.plugins.SLASHPlugin.SLASHPlugin;
+import edu.ucsd.ncmir.WIB.client.plugins.SLASHPlugin.messages.InterpolateActivationMessage;
+import edu.ucsd.ncmir.WIB.client.plugins.SLASHPlugin.messages.InterpolationContourMessage;
+import edu.ucsd.ncmir.WIB.client.plugins.SLASHPlugin.messages.InterpolationStatusMessage;
+
+/**
+ *
+ * @author spl
+ */
+
+public class InterpolationDialog
+    extends AbstractOperationDialog
+    implements AcceptCancelHandler,
+	       MessageListener
+
+{
+
+    private final SLASHPlugin _sp;
+    private final HTML _status = new HTML( "" );
+    private final AcceptCancelButtons _buttons =
+        new AcceptCancelButtons( this );
+
+    public InterpolationDialog( SLASHPlugin sp )
+
+    {
+
+	super( InterpolateActivationMessage.class );
+
+        this.addTitle( "Contour Interpolation" );
+
+	this._sp = sp;
+	Grid g = new Grid( 2, 1 );
+
+	this.add( g );
+
+	g.setWidget( 0, 0, this._status );
+	g.setWidget( 1, 0, this._buttons );
+
+	MessageManager.registerAsListener( this,
+					   InterpolationContourMessage.class,
+					   InterpolationStatusMessage.class );
+
+    }
+
+    @Override
+    public boolean onAcceptCancelAction( boolean accepted )
+    {
+
+        if ( accepted )
+            this._sp.interpolate( this._start_contour, this._finish_contour );
+        this.reset();
+
+        return false;
+
+    }
+
+    private void setStatus( String html )
+
+    {
+
+	this._status.setHTML( "<b>" + html + "</b>" );
+
+    }
+
+    private void reset()
+
+    {
+
+	this._buttons.setEnabled( false );
+	this._start_contour = null;
+	this.setStatus( "Select the first contour.<br>" +
+			"Use &quot;Control-Left Click&quot;<br>" +
+			"to select." );
+
+    }
+
+    private Annotation _start_contour = null;
+    private Annotation _finish_contour = null;
+
+    @Override
+    public void action( Message m, Object o )
+    {
+
+	if ( m instanceof InterpolationStatusMessage )
+	    this.updateStatus( ( ( Integer ) o ).intValue() );
+	else if ( m instanceof InterpolationContourMessage ) {
+
+	    Annotation a = ( Annotation ) o;
+
+	    if ( a.isClosed() ) {
+
+		if ( this._start_contour == null ) {
+
+		    this._start_contour = a;
+		    this.setStatus( "Select terminal contour.<br>" +
+				    "Use &quot;Control-Left Click&quot;<br>" +
+				    "to select." );
+
+		} else if ( a.getAnnotationID() ==
+			    this._start_contour.getAnnotationID() ) {
+
+		    int dp =
+			Math.abs( a.getPlane() -
+				  this._start_contour.getPlane() );
+
+		    if ( dp > 1 ) {
+
+			this._finish_contour = a;
+			this._buttons.setEnabled( true );
+			this.setStatus( "Click &quot;Accept&quot; " +
+					"to interpolate<br>" +
+					"or &quot;Cancel&quot; to start over." );
+
+		    } else
+			this.setStatus( "Error: Contours must be " +
+					"separated by<br>" +
+					"at least one intervening plane." );
+
+		} else
+		    this.setStatus( "Error: Contours must be in same object." );
+
+	    } else
+		this.setStatus( "Error: You must choose a closed contour." );
+
+	}
+
+    }
+
+    private void updateStatus( int plane )
+
+    {
+
+	if ( plane == -1 )
+	    this.reset();
+	else
+	    this.setStatus( "Plane " + plane + " interpolation complete." );
+
+    }
+
+    @Override
+    protected void init()
+
+    {
+        
+	this.reset();
+
+    }
+
+    @Override
+    protected void cleanup()
+
+    {
+
+	// does nothing
+
+    }
+
+}

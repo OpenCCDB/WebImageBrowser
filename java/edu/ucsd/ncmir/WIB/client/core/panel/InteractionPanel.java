@@ -1,0 +1,1048 @@
+package edu.ucsd.ncmir.WIB.client.core.panel;
+
+import com.google.gwt.dom.client.Style;
+import com.google.gwt.dom.client.Style.Cursor;
+import com.google.gwt.event.dom.client.DoubleClickEvent;
+import com.google.gwt.event.dom.client.DoubleClickHandler;
+import com.google.gwt.event.dom.client.KeyCodes;
+import com.google.gwt.event.dom.client.KeyDownEvent;
+import com.google.gwt.event.dom.client.KeyDownHandler;
+import com.google.gwt.event.dom.client.KeyPressEvent;
+import com.google.gwt.event.dom.client.KeyPressHandler;
+import com.google.gwt.event.dom.client.KeyUpEvent;
+import com.google.gwt.event.dom.client.KeyUpHandler;
+import com.google.gwt.event.dom.client.MouseDownEvent;
+import com.google.gwt.event.dom.client.MouseDownHandler;
+import com.google.gwt.event.dom.client.MouseMoveEvent;
+import com.google.gwt.event.dom.client.MouseMoveHandler;
+import com.google.gwt.event.dom.client.MouseUpEvent;
+import com.google.gwt.event.dom.client.MouseUpHandler;
+import com.google.gwt.event.dom.client.MouseWheelEvent;
+import com.google.gwt.event.dom.client.MouseWheelHandler;
+import com.google.gwt.event.shared.HandlerRegistration;
+import com.google.gwt.user.client.Cookies;
+import com.google.gwt.user.client.ui.PopupPanel;
+import com.google.gwt.user.client.ui.RootPanel;
+import com.googlecode.mgwt.dom.client.event.touch.TouchEndEvent;
+import com.googlecode.mgwt.dom.client.event.touch.TouchEndHandler;
+import com.googlecode.mgwt.dom.client.event.touch.TouchMoveEvent;
+import com.googlecode.mgwt.dom.client.event.touch.TouchMoveHandler;
+import com.googlecode.mgwt.dom.client.event.touch.TouchStartEvent;
+import com.googlecode.mgwt.dom.client.event.touch.TouchStartHandler;
+import com.googlecode.mgwt.dom.client.recognizer.pinch.PinchEvent;
+import com.googlecode.mgwt.dom.client.recognizer.pinch.PinchHandler;
+import com.googlecode.mgwt.ui.client.MGWT;
+import com.googlecode.mgwt.ui.client.widget.touch.TouchDelegate;
+import edu.ucsd.ncmir.WIB.client.core.Configuration;
+import edu.ucsd.ncmir.WIB.client.core.DragZoomMessageFactory;
+import edu.ucsd.ncmir.WIB.client.core.KeyData;
+import edu.ucsd.ncmir.WIB.client.core.components.AbstractInteractionMessageFactory;
+import edu.ucsd.ncmir.WIB.client.core.components.InfoDialog;
+import edu.ucsd.ncmir.WIB.client.core.components.menu.WIBMenuBar;
+import edu.ucsd.ncmir.WIB.client.core.drawable.Point;
+import edu.ucsd.ncmir.WIB.client.core.drawable.PointFactory;
+import edu.ucsd.ncmir.WIB.client.core.drawable.ScaleFactor;
+import edu.ucsd.ncmir.WIB.client.core.message.Message;
+import edu.ucsd.ncmir.WIB.client.core.messages.BumpZoomMessage;
+import edu.ucsd.ncmir.WIB.client.core.messages.DeleteZSliderPanelMessage;
+import edu.ucsd.ncmir.WIB.client.core.messages.DimensionsMessage;
+import edu.ucsd.ncmir.WIB.client.core.messages.DisplayInitMessage;
+import edu.ucsd.ncmir.WIB.client.core.messages.DragCompleteMessage;
+import edu.ucsd.ncmir.WIB.client.core.messages.DragMessage;
+import edu.ucsd.ncmir.WIB.client.core.messages.DragSetupMessage;
+import edu.ucsd.ncmir.WIB.client.core.messages.GetRGBMapMessage;
+import edu.ucsd.ncmir.WIB.client.core.messages.InitializePlaneMessage;
+import edu.ucsd.ncmir.WIB.client.core.messages.InitializeTimestepMessage;
+import edu.ucsd.ncmir.WIB.client.core.messages.InteractionPanelInitializedMessage;
+import edu.ucsd.ncmir.WIB.client.core.messages.KeyEventHandlerStateMessage;
+import edu.ucsd.ncmir.WIB.client.core.messages.KeyPressMessage;
+import edu.ucsd.ncmir.WIB.client.core.messages.MousePositionMessage;
+import edu.ucsd.ncmir.WIB.client.core.messages.ParameterUpdateMessage;
+import edu.ucsd.ncmir.WIB.client.core.messages.PopInteractionFactoryMessage;
+import edu.ucsd.ncmir.WIB.client.core.messages.PushInteractionFactoryMessage;
+import edu.ucsd.ncmir.WIB.client.core.messages.RGBChannelMapMessage;
+import edu.ucsd.ncmir.WIB.client.core.messages.RedrawMessage;
+import edu.ucsd.ncmir.WIB.client.core.messages.RequestPopupMenuMessage;
+import edu.ucsd.ncmir.WIB.client.core.messages.ResetMessage;
+import edu.ucsd.ncmir.WIB.client.core.messages.SetCursorMessage;
+import edu.ucsd.ncmir.WIB.client.core.messages.SetInteractionFactoryMessage;
+import edu.ucsd.ncmir.WIB.client.core.messages.SetOriginMessage;
+import edu.ucsd.ncmir.WIB.client.core.messages.SetPlaneSliderPositionMessage;
+import edu.ucsd.ncmir.WIB.client.core.messages.SetQuaternionMessage;
+import edu.ucsd.ncmir.WIB.client.core.messages.SetZoomBarMessage;
+import edu.ucsd.ncmir.WIB.client.core.messages.ShowInfoMessage;
+import edu.ucsd.ncmir.WIB.client.core.messages.TimestepMessage;
+import edu.ucsd.ncmir.WIB.client.core.messages.UpdateOriginMessage;
+import edu.ucsd.ncmir.WIB.client.core.messages.UpdatePlanePositionMessage;
+import edu.ucsd.ncmir.WIB.client.core.messages.ZoomInMessage;
+import edu.ucsd.ncmir.WIB.client.core.messages.ZoomMessage;
+import edu.ucsd.ncmir.WIB.client.core.messages.ZoomParametersMessage;
+import edu.ucsd.ncmir.WIB.client.plugins.AbstractPlugin;
+import edu.ucsd.ncmir.spl.LinearAlgebra.Matrix2D;
+import edu.ucsd.ncmir.spl.LinearAlgebra.Quaternion;
+import java.util.Stack;
+
+/**
+ * This panel provides all the mouse and keyboard interactivity by
+ * catching the appropriate <code>Event</code>s and sending
+ * corresponding </code>Message</code>s.
+ *
+ * @author spl
+ */
+public final class InteractionPanel
+    extends AbstractWIBPanel
+    implements DoubleClickHandler,
+	       MouseDownHandler,
+	       MouseMoveHandler,
+	       MouseUpHandler,
+	       MouseWheelHandler,
+	       PinchHandler,
+	       TouchStartHandler,
+	       TouchMoveHandler,
+	       TouchEndHandler,
+	       KeyDownHandler,
+	       KeyPressHandler,
+	       KeyUpHandler
+
+{
+
+    /**
+     * Creates an <code>InteractionPanel</code>. The <code>Interaction
+     * Panel</code> accepts and forwards all mouse and keyboard
+     * activity.
+     */
+    public InteractionPanel()
+
+    {
+
+        super( DisplayInitMessage.class,
+               DragCompleteMessage.class,
+               DragMessage.class,
+               DragSetupMessage.class,
+               GetRGBMapMessage.class,
+	       KeyEventHandlerStateMessage.class,
+               KeyPressMessage.class,
+               PopInteractionFactoryMessage.class,
+               PushInteractionFactoryMessage.class,
+               RequestPopupMenuMessage.class,
+               RedrawMessage.class,
+               ResetMessage.class,
+               SetCursorMessage.class,
+               SetInteractionFactoryMessage.class,
+               SetOriginMessage.class,
+               SetQuaternionMessage.class,
+               ShowInfoMessage.class,
+               TimestepMessage.class,
+               UpdatePlanePositionMessage.class,
+               ZoomInMessage.class,
+               ZoomMessage.class );
+
+        this.addDoubleClickHandler( this );
+        this.addMouseDownHandler( this );
+        this.addMouseWheelHandler( this );
+
+        this.addMouseMoveHandler( new MousePositionHandler() );
+
+	if ( MGWT.getOsDetection().isDesktop() ) {
+
+	    RootPanel.get().addDomHandler( this, KeyDownEvent.getType() );
+	    RootPanel.get().addDomHandler( this, KeyUpEvent.getType() );
+	    RootPanel.get().addDomHandler( this, KeyPressEvent.getType() );
+
+	    AbstractPlugin plugin = Configuration.getPlugin();
+            ControlsPanel controls_panel = plugin.getControlsPanel();
+
+            controls_panel.setWidth( "160px" );
+
+            this.add( controls_panel );
+            controls_panel.setVisible( false );
+
+        } else {
+
+	    TouchDelegate touch_delegate = new TouchDelegate( this );
+
+	    touch_delegate.addPinchHandler( this );
+	    touch_delegate.addTouchStartHandler( this );
+	    touch_delegate.addTouchMoveHandler( this );
+	    touch_delegate.addTouchEndHandler( this );
+
+	}
+
+    }
+
+    @Override
+    public void action( Message m, Object o )
+
+    {
+
+        if ( m instanceof DragMessage )
+            this.drag( ( Point ) o );
+        else if ( m instanceof DragSetupMessage )
+            this.initializeDrag( ( Point ) o );
+        else if ( m instanceof DragCompleteMessage )
+            this.endDrag();
+        else if ( m instanceof SetOriginMessage )
+	    this.setOrigin( ( SetOriginMessage ) m );
+	else if ( m instanceof SetInteractionFactoryMessage )
+	    this.updateFactory( ( AbstractInteractionMessageFactory ) o );
+        else if ( m instanceof PushInteractionFactoryMessage )
+	    this.pushFactory( ( AbstractInteractionMessageFactory ) o );
+        else if ( m instanceof PopInteractionFactoryMessage )
+	    this.popFactory();
+        else if ( m instanceof SetCursorMessage )
+            this.setCursor( o );
+        else if ( m instanceof DisplayInitMessage )
+            this.initDisplay( ( DisplayInitMessage ) m );
+        else if ( m instanceof SetQuaternionMessage )
+            this.initializeDisplayToNewView( ( Quaternion ) o );
+        else if ( m instanceof KeyPressMessage )
+            this.keyUp( ( KeyData ) o );
+        else if ( m instanceof UpdatePlanePositionMessage )
+            this.updatePlane( ( ( Integer ) o ).intValue() );
+        else if ( m instanceof ShowInfoMessage )
+            this.showInfo();
+        else if ( m instanceof ZoomMessage )
+            this.updateZoom( ( ScaleFactor ) o );
+        else if ( m instanceof TimestepMessage )
+            this.updateTimestep( ( ( Integer ) o ).intValue() );
+        else if ( m instanceof ZoomInMessage )
+            this.zoomIn( ( Point ) o );
+        else if ( m instanceof ResetMessage )
+            this.configure();
+        else if ( m instanceof GetRGBMapMessage )
+	    this.getRGB( ( GetRGBMapMessage ) m );
+	else if ( m instanceof RequestPopupMenuMessage )
+	    this.requestPopupMenu( ( RequestPopupMenuMessage ) m );
+	else if ( m instanceof RedrawMessage )
+            this.updateAll();
+	else if ( m instanceof KeyEventHandlerStateMessage )
+	    this.bumpDisableCount( ( Boolean ) o );
+
+    }
+
+    private void bumpDisableCount( Boolean bump )
+
+    {
+
+	this._key_handler_disable_count += bump.booleanValue() ? 1 : -1;
+
+    }
+
+    private void getRGB( GetRGBMapMessage grgbmm )
+
+    {
+
+	grgbmm.setRed( this._red );
+	grgbmm.setGreen( this._green );
+	grgbmm.setBlue( this._blue );
+
+    }
+
+    private void requestPopupMenu( RequestPopupMenuMessage rpmm )
+
+    {
+
+	this.popupMenu( rpmm.getPopup(), rpmm.getPoint() );
+
+    }
+
+    private void setOrigin( SetOriginMessage som )
+
+    {
+
+	this.updateOrigin( som.getXOrg(), som.getYOrg() );
+
+    }
+
+    private Stack<AbstractInteractionMessageFactory> _imf_stack =
+	new Stack<AbstractInteractionMessageFactory>();
+
+    private void updateFactory( AbstractInteractionMessageFactory imf )
+
+    {
+
+	this._imf_stack.clear();
+	this._imf_stack.push( imf );
+	this._interaction_message_factory = imf;
+	this._interaction_message_factory.activateMessage().send();
+
+    }
+
+    private void pushFactory( AbstractInteractionMessageFactory imf )
+
+    {
+
+	this._imf_stack.push( imf );
+	this._interaction_message_factory = imf;
+
+    }
+
+    private void popFactory()
+
+    {
+
+	if ( this._imf_stack.size() > 1 ) {
+
+	    this._imf_stack.pop();
+
+	    this._interaction_message_factory = this._imf_stack.peek();
+
+	}
+
+    }
+
+    private PopupPanel _popup = new PopupPanel();
+
+    private void popupMenu( WIBMenuBar popup, Point where )
+    {
+
+        if ( where != null ) {
+
+            this._popup.clear();
+
+            this._popup.add( popup );
+            this._popup.setPopupPosition( where.getPointerX(),
+					  where.getPointerY() );
+            this._popup.show();
+
+        } else
+            this._popup.hide();
+
+    }
+
+    private void setCursor( Object o )
+    {
+
+        Style style = this.getElement().getStyle();
+
+        if ( o instanceof Style.Cursor )
+            style.setCursor( ( Style.Cursor ) o );
+        else if ( o instanceof String )
+            style.setProperty( "cursor", ( String ) o );
+
+    }
+
+    private void initializeDisplayToNewView( Quaternion quaternion )
+    {
+
+        if ( !quaternion.equals( this._pum.getQuaternion() ) ) {
+
+            this._pum.setQuaternion( quaternion );
+            Configuration.getPlugin().initializeDimensions( quaternion );
+
+        }
+
+    }
+
+    private void updateZoom( ScaleFactor zoom )
+    {
+
+        double scale = this._pum.getZoom().getScale();
+
+        int wwidth = this.getOffsetWidth();
+        int wheight = this.getOffsetHeight();
+
+        double swwidth = wwidth / scale;
+        double swheight = wheight / scale;
+
+        double xul = this._pum.getXOrg();
+        double yul = this._pum.getYOrg();
+
+        double xcenter = xul + ( swwidth / 2.0 );
+        double ycenter = yul + ( swheight / 2.0 );
+
+        this._pum.setZoom( zoom );
+
+        this.setOriginRelativeToCenter( xcenter, ycenter );
+        this.updateAll();
+
+    }
+
+    private double _x;
+    private double _y;
+
+    private void initializeDrag( Point xy )
+    {
+
+        this._x = xy.getX();
+        this._y = xy.getY();
+
+        new SetCursorMessage().send( Cursor.MOVE );
+
+    }
+
+    private void drag( Point xy )
+    {
+
+        double x = xy.getX();
+        double y = xy.getY();
+
+        new SetOriginMessage( this._pum.getXOrg() - ( x - this._x ),
+                              this._pum.getYOrg() - ( y - this._y ) ).send();
+
+    }
+
+    private void endDrag()
+    {
+
+        this.updateAll();
+
+        new SetCursorMessage().send( Cursor.DEFAULT );
+
+    }
+
+    private void zoomIn( Point xy )
+    {
+
+        this.setOriginRelativeToCenter( xy.getX(), xy.getY() );
+        new BumpZoomMessage().send( 1.0 );
+
+    }
+
+    private void updateOrigin( double xorg, double yorg )
+
+    {
+
+        this._pum.setOrigin( xorg, yorg );
+        ScaleFactor zoom = this._pum.getZoom();
+
+        if ( zoom != null )
+            new UpdateOriginMessage( xorg, yorg, zoom ).send();
+
+    }
+
+    private void updateTimestep( int timestep )
+
+    {
+
+        this._pum.setTimestep( timestep );
+
+        this.updateAll();
+
+    }
+
+    private void setOriginRelativeToCenter( double xcenter, double ycenter )
+
+    {
+
+        int wwidth = this.getOffsetWidth();
+        int wheight = this.getOffsetHeight();
+
+        double newscale = this._pum.getZoom().getScale();
+
+        double nswwidth = wwidth / newscale;
+        double nswheight = wheight / newscale;
+
+        new SetOriginMessage( ( xcenter - ( nswwidth / 2.0 ) ),
+                              ( ycenter - ( nswheight / 2.0 ) ) ).send();
+
+    }
+
+    private final ParameterUpdateMessage _pum = new ParameterUpdateMessage();
+
+    private void updateAll()
+    {
+
+        if ( Cookies.isCookieEnabled() ) {
+
+            String cookie_prefix = Configuration.getCookiePrefix();
+
+            Cookies.setCookie( cookie_prefix + ".quaternion",
+                               this._pum.getQuaternion().toString() );
+            Cookies.setCookie( cookie_prefix + ".position",
+                               this._pum.getXOrg() + " " +
+                               this._pum.getYOrg() );
+            Cookies.setCookie( cookie_prefix + ".plane",
+                               this._pum.getPlane() + "" );
+            Cookies.setCookie( cookie_prefix + ".timestep",
+                               this._pum.getTimestep() + "" );
+            Cookies.setCookie( cookie_prefix + ".zoom",
+                               this._pum.getZoom().getExponent() + "" );
+
+        }
+
+        this._pum.send();
+
+    }
+
+    private int _width;
+    private int _height;
+    private int _depth;
+    private int _timesteps;
+    private int _tilesize;
+    private String _atlas_name;
+    private int _atlas_page;
+    private Matrix2D _matrix;
+    private int _red;
+    private int _green;
+    private int _blue;
+
+    private void initDisplay( DisplayInitMessage dim )
+
+    {
+
+        this._width = dim.getWidth();
+        this._height = dim.getHeight();
+        this._depth = dim.getDepth();
+        if ( this._depth == 1 )
+            new DeleteZSliderPanelMessage().send();
+
+        this._timesteps = dim.getTimesteps();
+        this._tilesize = dim.getTilesize();
+
+        this._matrix = dim.getMatrix();
+
+        this._red = dim.getRedMap();
+        this._green = dim.getGreenMap();
+        this._blue = dim.getBlueMap();
+
+        this._atlas_name = dim.getAtlasName();
+        this._atlas_page = dim.getAtlasPage();
+
+        String quaternion_string = null;
+        String zoom_string = null;
+        String position_string = null;
+        String plane_string = null;
+        String timestep_string = null;
+
+        if ( Cookies.isCookieEnabled() ) {
+
+            String cookie_prefix = Configuration.getCookiePrefix();
+
+            quaternion_string =
+		Cookies.getCookie( cookie_prefix + ".quaternion" );
+            zoom_string = Cookies.getCookie( cookie_prefix + ".zoom" );
+            position_string = Cookies.getCookie( cookie_prefix + ".position" );
+            plane_string = Cookies.getCookie( cookie_prefix + ".plane" );
+            timestep_string = Cookies.getCookie( cookie_prefix + ".timestep" );
+
+        }
+
+        this.configure();
+
+        if ( quaternion_string != null ) {
+
+	    Quaternion q = new Quaternion( quaternion_string );
+
+            new SetQuaternionMessage().send( q );
+
+	}
+
+	double init_zoom = Configuration.doubleParameter( "zoom" );
+
+	ScaleFactor zoom = null;
+
+	if ( ( init_zoom != Double.MAX_VALUE ) && ( init_zoom > 0 ) ) {
+
+	    double z = Math.log( init_zoom ) / Math.log( 2 );
+
+            zoom = new ScaleFactor( z );
+
+	} else if ( zoom_string != null ) {
+
+            zoom = new ScaleFactor( zoom_string.trim() );
+
+        }
+
+	if ( zoom != null ) {
+
+            new ZoomMessage().send( zoom );
+            new SetZoomBarMessage().send( zoom );
+
+	} else
+	    zoom = this._pum.getZoom();
+
+	int init_x = Configuration.intParameter( "x" );
+	int init_y = Configuration.intParameter( "y" );
+
+	double xorg = Double.MAX_VALUE;
+	double yorg = Double.MAX_VALUE;
+
+	if ( ( init_x != Integer.MAX_VALUE ) &&
+	     ( init_y != Integer.MAX_VALUE ) ) {
+
+	    double scale = zoom.getScale();
+
+	    double window_width = this.getOffsetWidth() / scale;
+	    double window_height = this.getOffsetHeight() / scale;
+
+	    xorg = -( window_width / 2 ) + init_x;
+	    yorg = -( window_height / 2 ) + init_y;
+
+	} else if ( position_string != null ) {
+
+            String[] xy = position_string.trim().split( " " );
+
+	    xorg = Double.parseDouble( xy[0] );
+	    yorg = Double.parseDouble( xy[1] );
+
+        }
+
+	if ( ( xorg != Double.MAX_VALUE ) && ( xorg != Double.MAX_VALUE ) )
+            new SetOriginMessage( xorg, yorg ).send();
+
+	int init_z = Configuration.intParameter( "z" );
+	int plane = Integer.MAX_VALUE;
+
+	if ( init_z != Integer.MAX_VALUE )
+	    plane = init_z;
+        else if ( plane_string != null )
+            plane = Integer.parseInt( plane_string );
+
+	if ( plane != Integer.MAX_VALUE ) {
+
+            new SetPlaneSliderPositionMessage().send( plane );
+            new UpdatePlanePositionMessage().send( plane );
+
+	}
+
+	int init_t = Configuration.intParameter( "t" );
+	int timestep = Integer.MAX_VALUE;
+
+	if ( init_t != Integer.MAX_VALUE )
+	    timestep = init_t;
+        else if ( timestep_string != null )
+	    timestep = Integer.parseInt( timestep_string.trim() );
+
+	if ( timestep != Integer.MAX_VALUE )
+            new TimestepMessage().send( timestep );
+        new InteractionPanelInitializedMessage().send( this );
+
+    }
+
+    private void configure()
+    {
+
+        new RGBChannelMapMessage( this._red, this._green, this._blue ).send();
+        new DimensionsMessage( this._width, this._height,
+                               this._tilesize ).send();
+
+        double ts = this._tilesize;
+
+        int wmag =
+            ( int ) Math.ceil( InteractionPanel.log2( this._width / ts ) );
+        int hmag =
+            ( int ) Math.ceil( InteractionPanel.log2( this._height / ts ) );
+
+        int mag = ( wmag > hmag ) ? wmag : hmag;
+        ScaleFactor.setMaxMag( -mag );
+
+        double window_width = this.getOffsetWidth();
+        double window_height = this.getOffsetHeight();
+        int wspace =
+            ( int ) Math.ceil( InteractionPanel.log2( window_width / ts ) );
+        int hspace =
+            ( int ) Math.ceil( InteractionPanel.log2( window_height / ts ) );
+        double initial_mag =
+               -( mag - ( ( wspace < hspace ) ? wspace : hspace ) );
+        double max_zoom_in = Configuration.getPlugin().getMaxZoomIn();
+	if ( initial_mag > max_zoom_in )
+	    initial_mag = max_zoom_in;
+        ScaleFactor zoom = new ScaleFactor( initial_mag );
+
+        this._pum.setZoom( zoom );
+
+        double scale = 1.0 / zoom.getScale();
+
+        window_width *= scale;
+        window_height *= scale;
+
+        double magwidth = this._width;
+        double magheight = this._height;
+
+        this._pum.setOrigin( -( window_width - magwidth ) / 2,
+                             -( window_height - magheight ) / 2 );
+
+        if ( this._depth > 1 ) {
+
+            new InitializePlaneMessage().send( this._depth );
+            this._pum.setPlane( ( this._depth - 1 ) / 2 );
+
+        }
+        if ( this._timesteps > 1 )
+            new InitializeTimestepMessage().send( this._timesteps );
+
+        double delta = Configuration.getPlugin().getZoomDelta();
+
+	this._zoom = ( int ) initial_mag;
+	this._delta = delta;
+	this._max_zoom_out = -mag;
+	this._max_zoom_in = max_zoom_in;
+        new ZoomParametersMessage( -mag, max_zoom_in,
+                                   ( int ) initial_mag, delta ).send();
+
+        this.updateAll();
+
+    }
+
+    private void showInfo()
+    {
+
+        InfoDialog info_dialog = new InfoDialog();
+
+        info_dialog.addTitle( "Info" );
+        info_dialog.addInfoPair( "Width:", this._width );
+        info_dialog.addInfoPair( "Height:", this._height );
+        if ( this._depth > 1 )
+            info_dialog.addInfoPair( "Depth:", this._depth );
+        if ( this._timesteps > 1 )
+            info_dialog.addInfoPair( "Timesteps:", this._timesteps );
+
+        info_dialog.displayCenteredMessage();
+
+    }
+
+    private static final double LOG2 = Math.log( 2 );
+
+    private static double log2( double v )
+    {
+
+        return Math.log( v ) / InteractionPanel.LOG2;
+
+    }
+
+    private void keyUp( KeyData key_data )
+    {
+
+        switch ( key_data.getKeyCode() ) {
+
+        case KeyCodes.KEY_PAGEDOWN: {
+
+            this.bumpPlane( -1, key_data.isShiftKeyDown() );
+            break;
+
+        }
+        case KeyCodes.KEY_PAGEUP: {
+
+            this.bumpPlane( 1, key_data.isShiftKeyDown() );
+            break;
+
+        }
+
+        }
+
+    }
+
+    private void bumpPlane( int dir, boolean end )
+    {
+
+        int plane;
+
+        if ( end )
+            plane = ( dir > 0 ) ? ( this._depth - 1 ) : 0;
+        else {
+
+            plane = this._pum.getPlane() + dir;
+            if ( plane < 0 )
+                plane = 0;
+            else if ( plane >= this._depth )
+                plane = this._depth - 1;
+
+        }
+        this.updatePlane( plane );
+        new SetPlaneSliderPositionMessage().send( plane );
+        new UpdatePlanePositionMessage().send( plane );
+
+    }
+
+    private void updatePlane( int plane )
+    {
+
+        this._pum.setPlane( plane );
+        this.updateAll();
+
+    }
+
+    private AbstractInteractionMessageFactory _interaction_message_factory =
+        new DragZoomMessageFactory();
+    private HandlerRegistration _mouse_move_handler_reg = null;
+    private HandlerRegistration _mouse_up_handler_reg = null;
+
+    @Override
+    public void onDoubleClick( DoubleClickEvent event )
+
+    {
+
+        event.preventDefault();
+
+        Message m = this._interaction_message_factory.getDoubleClickMessage();
+
+        if ( m != null )
+            m.send( PointFactory.create( event ) );
+
+    }
+
+    private boolean _shifted = false;
+    private boolean _control = false;
+
+    @Override
+    public void onMouseDown( MouseDownEvent event )
+
+    {
+
+        event.preventDefault();
+        this._mouse_move_handler_reg = this.addMouseMoveHandler( this );
+        this._mouse_up_handler_reg = this.addMouseUpHandler( this );
+        this._shifted = event.isShiftKeyDown();
+        this._control = event.isControlKeyDown();
+
+        Message m;
+	if ( this._control && this._shifted )
+	    m = this._interaction_message_factory.getControlAndShiftMouseDownMessage();
+        else if ( this._shifted )
+            m = this._interaction_message_factory.getShiftAndMouseDownMessage();
+        else if ( this._control )
+            m = this._interaction_message_factory.getControlAndMouseDownMessage();
+	else
+            m = this._interaction_message_factory.getMouseDownMessage();
+
+        if ( m != null )
+            m.send( PointFactory.create( event ) );
+
+    }
+
+    @Override
+    public void onMouseMove( MouseMoveEvent event )
+
+    {
+
+        event.preventDefault();
+
+        Message m;
+	if ( this._control && this._shifted )
+	    m = this._interaction_message_factory.getControlAndShiftMouseMoveMessage();
+        else if ( this._shifted )
+            m = this._interaction_message_factory.getShiftAndMouseMOveMessage();
+        else if ( this._control )
+            m = this._interaction_message_factory.getControlAndMouseMoveMessage();
+	else
+            m = this._interaction_message_factory.getMouseMoveMessage();
+
+        if ( m != null )
+            m.send( PointFactory.create( event ) );
+
+    }
+
+    @Override
+    public void onMouseUp( MouseUpEvent event )
+    {
+
+        event.preventDefault();
+        this._mouse_move_handler_reg.removeHandler();
+        this._mouse_up_handler_reg.removeHandler();
+
+        Message m;
+	if ( this._control && this._shifted )
+	    m = this._interaction_message_factory.getControlAndShiftMouseUpMessage();
+        else if ( this._shifted )
+            m = this._interaction_message_factory.getShiftAndMouseUpMessage();
+        else if ( this._control )
+            m = this._interaction_message_factory.getControlAndMouseUpMessage();
+	else
+            m = this._interaction_message_factory.getMouseUpMessage();
+
+        if ( m != null )
+            m.send( PointFactory.create( event ) );
+
+    }
+
+    @Override
+    public void onTouchStart( TouchStartEvent event )
+    {
+
+        event.preventDefault();
+
+	if ( event.getTouches().length() == 1 ) {
+
+	    Message m = this._interaction_message_factory.getMouseDownMessage();
+
+	    if ( m != null )
+		m.send( PointFactory.create( event ) );
+
+	}
+
+    }
+
+    @Override
+    public void onTouchMove( TouchMoveEvent event )
+    {
+
+        event.preventDefault();
+
+	if ( event.getTouches().length() == 1 ) {
+
+	    Message m = this._interaction_message_factory.getMouseMoveMessage();
+
+	    if ( m != null )
+		m.send( PointFactory.create( event ) );
+
+	}
+
+    }
+
+    @Override
+    public void onTouchEnd( TouchEndEvent event )
+    {
+
+        event.preventDefault();
+
+	if ( event.getTouches().length() == 1 ) {
+
+	    Message m = this._interaction_message_factory.getMouseUpMessage();
+
+	    if ( m != null )
+		m.send( PointFactory.create( event ) );
+
+	}
+
+    }
+
+    private double _zoom;
+    private double _delta;
+    private double _max_zoom_out;
+    private double _max_zoom_in;
+
+    @Override
+    public void onPinch( PinchEvent event )
+
+    {
+
+        double scale = Math.pow( 2, this._zoom ) * event.getScaleFactor();
+
+	if ( this._delta != Double.MAX_VALUE )
+	    scale = Math.pow( 2,
+			      Math.floor( ( Math.log( scale ) /
+					    Math.log( 2 ) ) / this._delta ) *
+			      this._delta );
+
+	this._zoom = Math.log( scale ) / Math.log( 2 );
+
+	if ( scale != this._pum.getZoom().getScale() ) {
+
+	    if ( ( this._max_zoom_out <= this._zoom ) &&
+		 ( this._zoom <= this._max_zoom_in ) ) {
+
+		Point p = PointFactory.create( event );
+
+		double px = p.getPointerX() / scale;
+		double py = p.getPointerY() / scale;
+
+		double xul = this._pum.getXOrg();
+		double yul = this._pum.getYOrg();
+
+		double x0 = xul + px;
+		double y0 = yul + py;
+
+		this._pum.setZoom( new ScaleFactor( this._zoom ) );
+
+		this.updateAll();
+
+	    }
+
+	}
+
+    }
+
+    private boolean _up = false;
+    private int _key_handler_disable_count = 0;
+
+    @Override
+    public void onKeyUp( KeyUpEvent event )
+
+    {
+
+	this._up = true;
+
+    }
+
+    @Override
+    public void onKeyDown( KeyDownEvent event )
+
+    {
+
+	if ( this._key_handler_disable_count == 0 ) {
+
+	    int nkc = event.getNativeKeyCode();
+
+	    switch ( nkc ) {
+
+	    case KeyCodes.KEY_DOWN:
+	    case KeyCodes.KEY_END:
+	    case KeyCodes.KEY_HOME:
+	    case KeyCodes.KEY_LEFT:
+	    case KeyCodes.KEY_PAGEDOWN:
+	    case KeyCodes.KEY_PAGEUP:
+	    case KeyCodes.KEY_RIGHT:
+	    case KeyCodes.KEY_UP: {
+
+		Message m =
+		    this._interaction_message_factory.getKeyPressMessage();
+
+		if ( m != null ) {
+
+                    event.preventDefault();
+		    m.send( new KeyData( event ) );
+
+                }
+		this._up = false;
+		break;
+
+	    }
+
+	    }
+
+	}
+
+    }
+
+    @Override
+    public void onKeyPress( KeyPressEvent event )
+
+    {
+
+        if ( this._key_handler_disable_count == 0 ) {
+
+	    if ( this._up )
+		this._up = false;
+	    else {
+
+		Message m =
+		    this._interaction_message_factory.getKeyPressMessage();
+
+		if ( m != null ) {
+
+                    event.preventDefault();
+		    m.send( new KeyData( event ) );
+
+                }
+
+	    }
+
+	}
+
+    }
+
+    @Override
+    public void onMouseWheel( MouseWheelEvent event )
+    {
+
+	int delta = event.getDeltaY();
+
+        this.bumpPlane( delta < 0 ? 1 : -1, false );
+
+    }
+
+    private static class MousePositionHandler
+        implements MouseMoveHandler
+    {
+
+        @Override
+        public void onMouseMove( MouseMoveEvent event )
+        {
+
+            new MousePositionMessage().send( PointFactory.create( event ) );
+
+        }
+
+    }
+}

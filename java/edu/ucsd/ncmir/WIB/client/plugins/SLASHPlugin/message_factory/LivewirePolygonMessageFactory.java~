@@ -1,0 +1,43 @@
+package edu.ucsd.ncmir.WIB.client.plugins.SLASHPlugin.message_factory;
+
+import edu.ucsd.ncmir.WIB.client.core.components.AbstractInteractionMessageFactory;
+import edu.ucsd.ncmir.WIB.client.core.message.Message;
+import edu.ucsd.ncmir.WIB.client.core.messages.AbstractActivationMessage;
+import edu.ucsd.ncmir.WIB.client.plugins.SLASHPlugin.messages.LivewirePolygonActivationMessage;
+
+/**
+ *
+ * @author spl
+ */
+public class LivewirePolygonMessageFactory
+    extends AbstractInteractionMessageFactory
+
+{
+
+    @Override
+    public AbstractActivationMessage activateMessage()
+    {
+
+        return new LivewirePolygonActivationMessage();
+
+    }
+
+    @Override
+    public Message getMouseDownMessage()
+    {
+        throw new UnsupportedOperationException( "Not supported yet." ); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public Message getMouseUpMessage()
+    {
+        throw new UnsupportedOperationException( "Not supported yet." ); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public Message getMouseMoveMessage()
+    {
+        throw new UnsupportedOperationException( "Not supported yet." ); //To change body of generated methods, choose Tools | Templates.
+    }
+
+}

@@ -1,0 +1,2 @@
+$stats=function(){};$self=self;$sessionId=null;$wnd=self;$doc=self;window=self;function edu_ucsd_ncmir_WIB_DefaultWorker_DefaultWorker(){var j='',h='.cache.js',g=':',f='E34A4C68FC5BDE814C7C54C3B0D8662E',i='edu.ucsd.ncmir.WIB.DefaultWorker.DefaultWorker';var b;var c=0;try{b=f}catch(a){var d={'worker bootstrap error':a.message};self.postMessage(JSON.stringify(d));return}var e=b.indexOf(g);if(e!=-1){c=Number(b.substring(e+1));b=b.substring(0,e)}importScripts(b+h);gwtOnLoad(undefined,i,j,c)}
+edu_ucsd_ncmir_WIB_DefaultWorker_DefaultWorker();

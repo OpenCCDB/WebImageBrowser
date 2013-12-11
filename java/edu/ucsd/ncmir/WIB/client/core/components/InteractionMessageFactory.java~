@@ -1,0 +1,163 @@
+package edu.ucsd.ncmir.WIB.client.core.components;
+
+import edu.ucsd.ncmir.WIB.client.core.message.Message;
+import edu.ucsd.ncmir.WIB.client.core.messages.DragCompleteMessage;
+import edu.ucsd.ncmir.WIB.client.core.messages.DragMessage;
+import edu.ucsd.ncmir.WIB.client.core.messages.DragSetupMessage;
+import edu.ucsd.ncmir.WIB.client.core.messages.KeyUpMessage;
+import edu.ucsd.ncmir.WIB.client.core.messages.PinchEndMessage;
+import edu.ucsd.ncmir.WIB.client.core.messages.PinchStartMessage;
+import edu.ucsd.ncmir.WIB.client.core.messages.PinchingMessage;
+import edu.ucsd.ncmir.WIB.client.core.messages.ZoomInMessage;
+
+/**
+ * A factory which creates messages for the mouse down, mouse up,
+ * mouse move, double click mouse actions and the key up keyboard
+ * action.
+ * @author spl
+ */
+abstract public class InteractionMessageFactory
+
+{
+
+    /**
+     * Generates a <code>Message</code> to be sent when the mouse down
+     * action occurs.
+     * @return a <code>Message</code> object to be sent.
+     */
+    abstract public Message down();
+
+    /**
+     * Generates a <code>Message</code> to be sent when the mouse up
+     * action occurs.
+     * @return a <code>Message</code> object to be sent.
+     */
+    abstract public Message up();
+
+    /**
+     * Generates a <code>Message</code> to be sent when the mouse move
+     * action occurs.  This <code>Message</code> will only be sent if
+     * the mouse button is down.
+     * @return a <code>Message</code> object to be sent
+     */
+    abstract public Message move();
+
+    private final PinchStartMessage _pinch_start = new PinchStartMessage();
+    private final PinchingMessage _pinching = new PinchingMessage();
+    private final PinchEndMessage _pinch_end = new PinchEndMessage();
+    private final DragSetupMessage _shift_down = new DragSetupMessage();
+    private final DragCompleteMessage _shift_up = new DragCompleteMessage();
+    private final DragMessage _shift_move = new DragMessage();
+
+    private final KeyUpMessage _key_up = new KeyUpMessage();
+    private final ZoomInMessage _double_click = new ZoomInMessage();
+
+    /**
+     * Generates a <code>Message</code> to be sent when a
+     * &quot;Pinch&quot; action occurs on a table or phone.
+     * @return a <code>Message</code> object to be sent
+     */
+    public Message pinchStart()
+
+    {
+
+	return this._pinch_start;
+
+    }
+
+    /**
+     * Generates a <code>Message</code> to be sent when a
+     * &quot;Pinch&quot; action occurs on a table or phone.
+     * @return a <code>Message</code> object to be sent
+     */
+    public Message pinching()
+
+    {
+
+	return this._pinching;
+
+    }
+
+    /**
+     * Generates a <code>Message</code> to be sent when a
+     * &quot;Pinch&quot; action occurs on a table or phone.
+     * @return a <code>Message</code> object to be sent
+     */
+    public Message pinchEnd()
+
+    {
+
+	return this._pinch_end;
+
+    }
+
+    /**
+     * Generates a <code>Message</code> to be sent when the mouse down
+     * action occurs while <code>Shift</code> key is pressed.
+     * @return a <code>Message</code> object to be sent.
+     */
+    public Message shiftDown()
+
+    {
+
+	return this._shift_down;
+
+    }
+
+    /**
+     * Generates a <code>Message</code> to be sent when the mouse up
+     * action occurs while <code>Shift</code> key is pressed.
+     * @return a <code>Message</code> object to be sent.
+     */
+    public Message shiftUp()
+
+    {
+
+	return this._shift_up;
+
+    }
+
+    /**
+     * Generates a <code>Message</code> to be sent when the mouse move
+     * action occurs while <code>Shift</code> key is pressed.  This
+     * <code>Message</code> will only be sent if the mouse button is
+     * down.
+     * @return a <code>Message</code> object to be sent
+     */
+    public Message shiftMove()
+
+    {
+
+	return this._shift_move;
+
+    }
+
+    /**
+     * Generates a <code>Message</code> to be sent when a key is
+     * pressed and then released.  May be overridden if the subclass
+     * wishes.
+     * @return a <code>Message</code> object to be sent.
+     */
+    public Message keyUp()
+
+    {
+
+	return this._key_up;
+
+    }
+
+    /**
+     * Generates a <code>Message</code> to be sent when the mouse
+     * &quot;double click&quot; action occurs.  May be overridden if
+     * the subclass wishes.
+     * @return a <code>Message</code> object to be sent.
+     */
+    public Message doubleClick()
+
+    {
+
+	return this._double_click;
+
+    }
+
+}

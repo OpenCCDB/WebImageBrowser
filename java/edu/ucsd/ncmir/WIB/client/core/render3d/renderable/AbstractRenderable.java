@@ -1,0 +1,138 @@
+package edu.ucsd.ncmir.WIB.client.core.render3d.renderable;
+
+import gwt.g3d.client.gl2.GL2;
+import gwt.g3d.client.shader.AbstractShader;
+import javax.vecmath.Matrix3f;
+import javax.vecmath.Matrix4f;
+import javax.vecmath.Vector3f;
+
+/**
+ *
+ * @author spl
+ */
+public abstract class AbstractRenderable
+    implements Renderable
+
+{
+
+    /**
+     * An abstract class for representing a Renderable.
+     *
+     */
+
+    private GL2 _gl;
+    private AbstractShader _shader;
+
+    protected abstract AbstractShader getShader( GL2 gl );
+
+    @Override
+    public final void init( GL2 gl )
+
+    {
+
+	this._gl = gl;
+
+        this._shader = this.getShader( this._gl );
+        this.attach();
+
+    }
+
+    protected abstract void attach();
+
+    protected void setScalar( String name, float value )
+
+    {
+
+	this._gl.uniform1f( this._shader.getUniformLocation( name ), value );
+
+    }
+
+    protected void setVector( String name, float p, float q, float r )
+
+    {
+
+	this._gl.uniform( this._shader.getUniformLocation( name ),
+			  new Vector3f( p, q, r ) );
+
+    }
+
+    private Vector3f _light_location = new Vector3f( 0, 0, 0 );
+
+    @Override
+    public final void setLightPosition( float x, float y, float z )
+
+    {
+
+	this._light_location = new Vector3f( x, y, z );
+
+    }
+
+    private Vector3f _eye_location = new Vector3f( 0, 0, 0 );
+
+    @Override
+    public final void setEyePosition( float x, float y, float z )
+
+    {
+
+	this._eye_location = new Vector3f( x, y, z );
+
+    }
+
+    @Override
+    public final void draw( Matrix4f projection_matrix,
+			    Matrix4f modelview_matrix,
+			    Matrix3f normal_matrix )
+
+    {
+
+        this._shader.bind();
+
+	this._gl.uniform( this._shader.
+			  getUniformLocation( "uPointLightingLocation"),
+			  this._light_location );
+	this._gl.uniform( this._shader.getUniformLocation( "eyeDirection" ),
+			  this._eye_location );
+
+        this._gl.uniformMatrix( this._shader.getUniformLocation( "uPMatrix" ),
+	 			projection_matrix );
+        this._gl.uniformMatrix( this._shader.getUniformLocation( "uMVMatrix" ),
+	 			modelview_matrix );
+        this._gl.uniformMatrix( this._shader.getUniformLocation( "uNMatrix" ),
+	 			normal_matrix );
+	this.drawImpl( this._gl );
+
+    }
+
+    /**
+     * Overrides this method to draw the mesh.
+     */
+
+    protected abstract void drawImpl( GL2 gl );
+
+    /**
+     * Override this method to dispose unmanaged resources in the subclass.
+     */
+
+    protected void disposeImpl()
+
+    {
+
+    }
+
+    protected final GL2 getGL()
+
+    {
+
+        return this._gl;
+
+    }
+
+    protected final AbstractShader getShader()
+
+    {
+
+        return this._shader;
+
+    }
+
+}
