@@ -1,0 +1,578 @@
+;; -*- mode: emacs-lisp; coding: emacs-mule; -*-
+;; --------------------------------------------------------------------------
+;; Desktop File for Emacs
+;; --------------------------------------------------------------------------
+;; Created Wed Aug 28 14:28:45 2013
+;; Desktop file format version 206
+;; Emacs version 23.1.1
+
+;; Global section:
+(setq desktop-missing-file-warning nil)
+(setq tags-file-name "/home/spl/src/misc/SLASHdb/TAGS")
+(setq tags-table-list '("/home/spl/src/misc/SLASHdb/TAGS"))
+(setq search-ring nil)
+(setq regexp-search-ring nil)
+(setq register-alist nil)
+
+;; Buffer section -- buffers listed in same order as in buffer list:
+(desktop-create-buffer 206
+  "/home/spl/src/misc/SLASHdb/Imakefile"
+  "Imakefile"
+  'text-mode
+  '(auto-fill-mode)
+  3348
+  '(3348 t)
+  nil
+  nil
+  '((buffer-file-coding-system . raw-text-unix) (overwrite-mode)))
+
+(desktop-create-buffer 206
+  "/home/spl/src/misc/SLASHdb/SLASHdb.c"
+  "SLASHdb.c"
+  'c-mode
+  '(abbrev-mode)
+  35887
+  '(33287 t)
+  nil
+  nil
+  '((buffer-file-coding-system . raw-text-unix)))
+
+(desktop-create-buffer 206
+  "/home/spl/src/misc/SLASHdb/go"
+  "go"
+  'sh-mode
+  nil
+  340
+  '(286 t)
+  nil
+  nil
+  '((buffer-file-coding-system . raw-text-unix) (overwrite-mode)))
+
+(desktop-create-buffer 206
+  "/home/spl/src/misc/SLASHdb/SLASHdb_defs.h"
+  "SLASHdb_defs.h"
+  'c-mode
+  '(abbrev-mode)
+  3373
+  '(3463 t)
+  nil
+  nil
+  '((buffer-file-coding-system . raw-text-unix)))
+
+(desktop-create-buffer 206
+  "/home/spl/include/bjhash.h"
+  "bjhash.h"
+  'c-mode
+  '(abbrev-mode)
+  1925
+  '(2279 t)
+  nil
+  nil
+  '((buffer-file-coding-system . undecided-unix)))
+
+(desktop-create-buffer 206
+  "/home/spl/include/spl.h"
+  "spl.h"
+  'c-mode
+  '(abbrev-mode)
+  1
+  '(11757 t)
+  t
+  nil
+  '((buffer-file-coding-system . undecided-unix)))
+
+(desktop-create-buffer 206
+  "/home/spl/include/splxml.h"
+  "splxml.h"
+  'c-mode
+  '(abbrev-mode)
+  1187
+  '(564 t)
+  t
+  nil
+  '((buffer-file-coding-system . undecided-unix)))
+
+(desktop-create-buffer 206
+  "/home/spl/src/libraries/libspl/libspl.c"
+  "libspl.c"
+  'c-mode
+  '(abbrev-mode)
+  23188
+  '(26393 t)
+  nil
+  nil
+  '((buffer-file-coding-system . raw-text-unix)))
+
+(desktop-create-buffer 206
+  "/home/spl/src/libraries/libsplxml/xml.c"
+  "xml.c"
+  'c-mode
+  '(abbrev-mode)
+  2012
+  '(8752 t)
+  nil
+  nil
+  '((buffer-file-coding-system . raw-text-unix)))
+
+(desktop-create-buffer 206
+  "/home/spl/src/graphics/tri/btri.c"
+  "btri.c"
+  'c-mode
+  '(abbrev-mode)
+  113
+  '(234 t)
+  nil
+  nil
+  '((buffer-file-coding-system . undecided-unix)))
+
+(desktop-create-buffer 206
+  "/home/spl/src/libraries/libspl/graphics_statics.h"
+  "graphics_statics.h"
+  'c-mode
+  '(abbrev-mode)
+  1
+  '(nil nil)
+  nil
+  nil
+  '((buffer-file-coding-system . undecided-unix)))
+
+(desktop-create-buffer 206
+  "/home/spl/src/libraries/libspl/Imakefile"
+  "Imakefile<6>"
+  'text-mode
+  '(auto-fill-mode)
+  191
+  '(nil nil)
+  nil
+  nil
+  '((buffer-file-coding-system . undecided-unix)))
+
+(desktop-create-buffer 206
+  "/home/spl/src/graphics/mcube/dp.c"
+  "dp.c"
+  'c-mode
+  '(abbrev-mode)
+  1
+  '(nil nil)
+  nil
+  nil
+  '((buffer-file-coding-system . undecided-unix)))
+
+(desktop-create-buffer 206
+  "/home/spl/src/graphics/mcube/bdp.c"
+  "bdp.c"
+  'c-mode
+  '(abbrev-mode)
+  1
+  '(nil nil)
+  nil
+  nil
+  '((buffer-file-coding-system . undecided-unix)))
+
+(desktop-create-buffer 206
+  "/home/spl/src/graphics/mcube/mcube.c"
+  "mcube.c"
+  'c-mode
+  '(abbrev-mode)
+  21661
+  '(17888 t)
+  nil
+  nil
+  '((buffer-file-coding-system . undecided-unix)))
+
+(desktop-create-buffer 206
+  "/home/spl/src/misc/SLASHdb/ifix"
+  "ifix"
+  'awk-mode
+  '(abbrev-mode)
+  451
+  '(402 t)
+  nil
+  nil
+  '((buffer-file-coding-system . raw-text-unix)))
+
+(desktop-create-buffer 206
+  "/home/spl/src/misc/SLASHdb/tables"
+  "tables"
+  'text-mode
+  '(auto-fill-mode)
+  1929
+  '(1916 t)
+  nil
+  nil
+  '((buffer-file-coding-system . raw-text-unix)))
+
+(desktop-create-buffer 206
+  "/home/spl/src/misc/SLASHdb/spec"
+  "spec"
+  'text-mode
+  '(auto-fill-mode)
+  205
+  '(258 t)
+  nil
+  nil
+  '((buffer-file-coding-system . raw-text-unix)))
+
+(desktop-create-buffer 206
+  "/usr/lib/rpm/macros"
+  "macros"
+  'text-mode
+  '(auto-fill-mode view-mode)
+  6882
+  '(4399 t)
+  t
+  nil
+  '((buffer-file-coding-system . undecided-unix)))
+
+(desktop-create-buffer 206
+  "/usr/lib/rpm/rpmrc"
+  "rpmrc"
+  'text-mode
+  '(auto-fill-mode)
+  13645
+  '(1 t)
+  t
+  nil
+  '((buffer-file-coding-system . undecided-unix)))
+
+(desktop-create-buffer 206
+  "/usr/lib/rpm/find-debuginfo.sh"
+  "find-debuginfo.sh"
+  'sh-mode
+  nil
+  4308
+  '(4287 t)
+  t
+  nil
+  '((buffer-file-coding-system . undecided-unix)))
+
+(desktop-create-buffer 206
+  "/home/spl/include/splweb.h"
+  "splweb.h"
+  'c-mode
+  '(abbrev-mode)
+  613
+  '(592 t)
+  t
+  nil
+  '((buffer-file-coding-system . undecided-unix)))
+
+(desktop-create-buffer 206
+  "/home/spl/src/libraries/libsplweb/splweb.c"
+  "splweb.c"
+  'c-mode
+  '(abbrev-mode)
+  5531
+  '(4844 t)
+  nil
+  nil
+  '((buffer-file-coding-system . raw-text-unix)))
+
+(desktop-create-buffer 206
+  "/home/spl/src/libraries/libsplweb/client_server.c"
+  "client_server.c"
+  'c-mode
+  '(abbrev-mode)
+  1012
+  '(2448 t)
+  nil
+  nil
+  '((buffer-file-coding-system . raw-text-unix)))
+
+(desktop-create-buffer 206
+  "/home/spl/src/misc/SLASHdb/try"
+  "try"
+  'sh-mode
+  nil
+  200
+  '(195 t)
+  nil
+  nil
+  '((buffer-file-coding-system . raw-text-unix)))
+
+(desktop-create-buffer 206
+  "/home/spl/src/libraries/bjhash/hashtab.c"
+  "hashtab.c"
+  'c-mode
+  '(abbrev-mode)
+  1
+  '(4123 t)
+  nil
+  nil
+  '((buffer-file-coding-system . undecided-unix)))
+
+(desktop-create-buffer 206
+  "/home/spl/src/libraries/bjhash/bjhash.h"
+  "bjhash.h<2>"
+  'c-mode
+  '(abbrev-mode)
+  2301
+  '(1444 t)
+  nil
+  nil
+  '((buffer-file-coding-system . undecided-unix)))
+
+(desktop-create-buffer 206
+  "/home/spl/src/libraries/libsplxml/splxml_defs.h"
+  "splxml_defs.h"
+  'c-mode
+  '(abbrev-mode)
+  444
+  '(432 t)
+  nil
+  nil
+  '((buffer-file-coding-system . raw-text-unix)))
+
+(desktop-create-buffer 206
+  "/home/spl/src/misc/SLASHdb/SLASHdb.pl"
+  "SLASHdb.pl"
+  'perl-mode
+  nil
+  140
+  '(144 t)
+  nil
+  nil
+  '((buffer-file-coding-system . raw-text-unix)))
+
+(desktop-create-buffer 206
+  "/home/spl/src/libraries/libsplweb/splweb_defs.h"
+  "splweb_defs.h"
+  'c-mode
+  '(abbrev-mode)
+  218
+  '(230 t)
+  nil
+  nil
+  '((buffer-file-coding-system . raw-text-unix)))
+
+(desktop-create-buffer 206
+  "/home/spl/src/libraries/libsplxml/Imakefile"
+  "Imakefile<5>"
+  'text-mode
+  '(auto-fill-mode)
+  3819
+  '(1067 t)
+  nil
+  nil
+  '((buffer-file-coding-system . raw-text-unix)))
+
+(desktop-create-buffer 206
+  "/usr/include/signal.h"
+  "signal.h"
+  'c-mode
+  '(abbrev-mode view-mode)
+  6549
+  '(6565 t)
+  t
+  nil
+  '((buffer-file-coding-system . undecided-unix)))
+
+(desktop-create-buffer 206
+  "/home/spl/src/libraries/libsplpq/pq.c"
+  "pq.c"
+  'c-mode
+  '(abbrev-mode)
+  2154
+  '(2077 t)
+  nil
+  nil
+  '((buffer-file-coding-system . raw-text-unix)))
+
+(desktop-create-buffer 206
+  "/home/spl/src/misc/SLASHdb/id_relations"
+  "id_relations"
+  'text-mode
+  '(auto-fill-mode)
+  167
+  '(223 t)
+  nil
+  nil
+  '((buffer-file-coding-system . raw-text-unix)))
+
+(desktop-create-buffer 206
+  nil
+  "*info*"
+  'Info-mode
+  nil
+  394844
+  '(nil nil)
+  t
+  '("/usr/share/info/gawk" "String Functions")
+  '((tab-width . 8) (buffer-file-coding-system . undecided-unix) (case-fold-search . t)))
+
+(desktop-create-buffer 206
+  "/home/spl/include/splpq.h"
+  "splpq.h"
+  'c-mode
+  '(abbrev-mode)
+  188
+  '(173 t)
+  t
+  nil
+  '((buffer-file-coding-system . undecided-unix)))
+
+(desktop-create-buffer 206
+  "/home/spl/tmp/try/try.c"
+  "try.c"
+  'c-mode
+  '(abbrev-mode)
+  365
+  '(365 t)
+  nil
+  nil
+  '((buffer-file-coding-system . raw-text-unix)))
+
+(desktop-create-buffer 206
+  "/home/spl/src/libraries/libsplpq/splpq_defs.h"
+  "splpq_defs.h"
+  'c-mode
+  '(abbrev-mode)
+  1
+  '(nil nil)
+  nil
+  nil
+  '((buffer-file-coding-system . undecided-unix)))
+
+(desktop-create-buffer 206
+  "/usr/include/pthread.h"
+  "pthread.h"
+  'c-mode
+  '(abbrev-mode)
+  2272
+  '(nil nil)
+  t
+  nil
+  '((buffer-file-coding-system . undecided-unix)))
+
+(desktop-create-buffer 206
+  "/home/spl/src/misc/wibdb/wibdb.c"
+  "wibdb.c"
+  'c-mode
+  '(abbrev-mode)
+  7437
+  '(4119 t)
+  nil
+  nil
+  '((buffer-file-coding-system . undecided-unix)))
+
+(desktop-create-buffer 206
+  "/usr/include/features.h"
+  "features.h"
+  'c-mode
+  '(abbrev-mode)
+  1
+  '(10812 t)
+  t
+  nil
+  '((buffer-file-coding-system . undecided-unix)))
+
+(desktop-create-buffer 206
+  "/usr/include/errno.h"
+  "errno.h"
+  'c-mode
+  '(abbrev-mode view-mode)
+  1
+  '(2289 t)
+  t
+  nil
+  '((buffer-file-coding-system . undecided-unix)))
+
+(desktop-create-buffer 206
+  "/home/spl/src/imaging/image_manager/image_manager.c"
+  "image_manager.c"
+  'c-mode
+  '(abbrev-mode)
+  3130
+  '(3117 t)
+  nil
+  nil
+  '((buffer-file-coding-system . undecided-unix)))
+
+(desktop-create-buffer 206
+  "/home/spl/tmp/try/Imakefile"
+  "Imakefile<3>"
+  'text-mode
+  '(auto-fill-mode)
+  3144
+  '(3133 t)
+  nil
+  nil
+  '((buffer-file-coding-system . undecided-unix)))
+
+(desktop-create-buffer 206
+  "/home/spl/src/imaging/downsampler/Imakefile"
+  "Imakefile<4>"
+  'text-mode
+  '(auto-fill-mode)
+  8447
+  '(1 t)
+  nil
+  nil
+  '((buffer-file-coding-system . raw-text-unix)))
+
+(desktop-create-buffer 206
+  "/home/spl/src/imaging/image_manager/worker.c"
+  "worker.c"
+  'c-mode
+  '(abbrev-mode)
+  1664
+  '(333 t)
+  nil
+  nil
+  '((buffer-file-coding-system . undecided-unix)))
+
+(desktop-create-buffer 206
+  "/home/spl/src/libraries/libsplweb/Imakefile"
+  "Imakefile<2>"
+  'text-mode
+  '(auto-fill-mode)
+  3703
+  '(3684 t)
+  nil
+  nil
+  '((buffer-file-coding-system . raw-text-unix)))
+
+(desktop-create-buffer 206
+  "/home/spl/src/imaging/image_manager/transact.c"
+  "transact.c"
+  'c-mode
+  '(abbrev-mode)
+  1302
+  '(1095 t)
+  nil
+  nil
+  '((buffer-file-coding-system . undecided-unix)))
+
+(desktop-create-buffer 206
+  "/home/spl/src/imaging/image_manager/request.c"
+  "request.c"
+  'c-mode
+  '(abbrev-mode)
+  646
+  '(616 t)
+  nil
+  nil
+  '((buffer-file-coding-system . undecided-unix)))
+
+(desktop-create-buffer 206
+  "/home/spl/src/imaging/image_manager/image_manager_jni.c"
+  "image_manager_jni.c"
+  'c-mode
+  '(abbrev-mode)
+  2358
+  '(nil nil)
+  nil
+  nil
+  '((buffer-file-coding-system . undecided-unix)))
+
+(desktop-create-buffer 206
+  nil
+  "libsplweb"
+  'dired-mode
+  nil
+  554
+  '(nil nil)
+  t
+  '("/home/spl/src/libraries/libsplweb/")
+  nil)
+

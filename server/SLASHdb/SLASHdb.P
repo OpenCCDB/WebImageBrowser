@@ -1,0 +1,6 @@
+int stat(__const char *__path, struct stat *__statbuf);
+int lstat(__const char *__path, struct stat *__statbuf);
+int fstat(int __fd, struct stat *__statbuf);
+int mknod(__const char *__path, __mode_t __mode, __dev_t __dev);
+int main(int argc, char **argv);
+void adx_store_data(const char *filepath, const char *data);

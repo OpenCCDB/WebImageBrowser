@@ -1,0 +1,4 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<root elapsed_seconds="0.047423" process_id="3693" status="fail">
+  <error>NULL result for key 'color_int'</error>
+</root>

@@ -1,0 +1,28 @@
+annotation_id
+	slash_annot_geom_map
+	slash_annotation
+	slash_applicatoin_data
+
+dataset_id
+	slash_annotation
+	slash_applicatoin_data
+	slash_dataset
+	slash_dataset_to_mission
+
+geom_id
+	slash_annot_geom_map [As 'geometry_id']
+	slash_applicatoin_data
+	slash_geometry
+
+mission_id
+	slash_dataset_to_mission
+	slash_game_mission
+
+sproject_id
+	slash_dataset
+	slash_project
+
+user_id
+	slash_geometry
+	slash_user
+

@@ -1,0 +1,197 @@
+table: slash_annot_geom_map
+
+	[0] map_id
+	[1] annotation_id
+	[2] geometry_id
+
+table: slash_annotation
+
+	[0] annotation_id
+	[1] dataset_id
+	[2] bound_box
+	[3] geometry_type
+	[4] object_name
+	[5] object_name_ont_uri
+	[6] orientation_x
+	[7] orientation_y
+	[8] orientation_z
+	[9] slash_pic_id
+	[10] orientation_w
+	[11] ontology_name
+	[12] version_number
+	[13] version_date
+	[14] version_nickname
+	[15] is_training_data
+	[16] color_int
+
+table: slash_annotation_tree
+
+	[0] tree_id
+	[1] annot_parent_id
+	[2] annot_child_id
+
+table: slash_applicatoin_data
+
+	[0] application_data_id
+	[1] application_key
+	[2] application_value
+	[3] annotation_id
+	[4] version_id
+	[5] modified_time
+	[6] geom_id
+	[7] dataset_id
+
+table: slash_dataset
+
+	[0] dataset_id
+	[1] sproject_id
+	[2] dataset_name
+	[3] resource_path
+	[4] anatomical_region_name
+	[5] anatomical_region_ontology
+	[6] bounding_box
+	[7] curation_state
+	[8] curator_user_name
+	[9] organism_name
+	[10] organism_ontology
+	[11] orientation_x
+	[12] orientation_y
+	[13] orientation_z
+	[14] origin_x
+	[15] origin_y
+	[16] origin_z
+	[17] public_availability_state
+	[18] scale_factor_x
+	[19] scale_factor_y
+	[20] scale_factor_z
+	[21] atlas_name
+	[22] orientation_w
+	[23] imod_annotation_file
+	[24] width
+	[25] height
+	[26] num_of_slides
+	[27] actual_location
+	[28] jpeg_generation_error
+	[29] x_pixel_space
+	[30] y_pixel_space
+	[31] z_pixel_space
+	[32] zoomify_date
+	[33] zoomify_folder
+
+table: slash_dataset_jpeg
+
+	[0] jpeg_id
+	[1] image_path
+	[2] dataset_id
+	[3] image_order
+
+table: slash_dataset_to_mission
+
+	[0] slash_dataset_to_mission
+	[1] mission_id
+	[2] dataset_id
+
+table: slash_game_layer
+
+	[0] layer_id
+	[1] dataset_id
+	[2] pic_id
+	[3] label
+	[4] url
+	[5] color
+
+table: slash_game_mission
+
+	[0] mission_id
+	[1] mission_name
+	[2] difficulty
+	[3] mission_pic
+	[4] mission_task
+
+table: slash_geometry
+
+	[0] geom_id
+	[1] polyline
+	[2] user_id
+	[3] z_index
+	[4] modified_time
+	[5] geometry_type
+	[6] bounding_box
+	[7] srs_name
+	[8] transformed_sdo
+	[9] transformed_z_index
+	[10] geom_area
+	[11] geom_area_int
+
+table: slash_geometry_type
+
+	[0] slash_annotation_type_name
+
+table: slash_image_box
+
+	[0] image_id
+	[1] ipath
+	[2] attribution
+	[3] contact
+	[4] description
+	[5] email
+	[6] license
+	[7] portal_user
+	[8] modified_time
+	[9] actual_location
+	[10] deleted
+	[11] wib_url
+	[12] x_max
+	[13] y_max
+	[14] z_max
+	[15] is_public
+
+table: slash_image_box_access
+
+	[0] access_id
+	[1] image_id
+	[2] portal_user
+	[3] owner
+	[4] modified_date
+
+table: slash_pic
+
+	[0] pic_id
+	[1] pic_desc
+	[2] fixed_url
+	[3] pic
+	[4] width
+	[5] height
+	[6] ispublic
+	[7] pic_type
+
+table: slash_project
+
+	[0] sproject_id
+	[1] creator_id
+	[2] project_name
+	[3] summary
+
+table: slash_srs
+
+	[0] srs_name
+
+table: slash_training_data
+
+	[0] training_data_id
+	[1] ipath
+	[2] modified_time
+	[3] original_dataset
+	[4] user_id
+	[5] annotation_xml
+
+table: slash_user
+
+	[0] user_id
+	[1] user_name
+	[2] first_name
+	[3] last_name
+	[4] openid
+	[5] created_date
+	[6] email
+

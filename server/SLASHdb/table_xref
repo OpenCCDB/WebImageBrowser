@@ -1,0 +1,242 @@
+actual_location
+	slash_dataset [27]
+
+anatomical_region_name
+	slash_dataset [4]
+
+anatomical_region_ontology
+	slash_dataset [5]
+
+annot_child_id
+	slash_annotation_tree [2]
+
+annot_parent_id
+	slash_annotation_tree [1]
+
+annotation_id
+	slash_annot_geom_map [1]
+	slash_annotation [0]
+	slash_applicatoin_data [3]
+
+application_data_id
+	slash_applicatoin_data [0]
+
+application_key
+	slash_applicatoin_data [1]
+
+application_value
+	slash_applicatoin_data [2]
+
+atlas_name
+	slash_dataset [21]
+
+bound_box
+	slash_annotation [2]
+
+bounding_box
+	slash_dataset [6]
+	slash_geometry [6]
+
+created_date
+	slash_user [5]
+
+creator_id
+	slash_project [1]
+
+curation_state
+	slash_dataset [7]
+
+curator_user_name
+	slash_dataset [8]
+
+dataset_id
+	slash_annotation [1]
+	slash_applicatoin_data [7]
+	slash_dataset [0]
+	slash_dataset_to_mission [2]
+
+dataset_name
+	slash_dataset [2]
+
+difficulty
+	slash_game_mission [2]
+
+email
+	slash_user [6]
+
+first_name
+	slash_user [2]
+
+geom_id
+	slash_applicatoin_data [6]
+	slash_geometry [0]
+
+geometry_id
+	slash_annot_geom_map [2]
+
+geometry_type
+	slash_annotation [3]
+	slash_geometry [5]
+
+height
+	slash_dataset [25]
+
+imod_annotation_file
+	slash_dataset [23]
+
+is_training_data
+	slash_annotation [15]
+
+jpeg_generation_error
+	slash_dataset [28]
+
+last_name
+	slash_user [3]
+
+map_id
+	slash_annot_geom_map [0]
+
+mission_id
+	slash_dataset_to_mission [1]
+	slash_game_mission [0]
+
+mission_name
+	slash_game_mission [1]
+
+mission_pic
+	slash_game_mission [3]
+
+mission_task
+	slash_game_mission [4]
+
+modified_time
+	slash_applicatoin_data [5]
+	slash_geometry [4]
+
+num_of_slides
+	slash_dataset [26]
+
+object_name
+	slash_annotation [4]
+
+object_name_ont_uri
+	slash_annotation [5]
+
+ontology_name
+	slash_annotation [11]
+
+openid
+	slash_user [4]
+
+organism_name
+	slash_dataset [9]
+
+organism_ontology
+	slash_dataset [10]
+
+orientation_w
+	slash_annotation [10]
+	slash_dataset [22]
+
+orientation_x
+	slash_annotation [6]
+	slash_dataset [11]
+
+orientation_y
+	slash_annotation [7]
+	slash_dataset [12]
+
+orientation_z
+	slash_annotation [8]
+	slash_dataset [13]
+
+origin_x
+	slash_dataset [14]
+
+origin_y
+	slash_dataset [15]
+
+origin_z
+	slash_dataset [16]
+
+polyline
+	slash_geometry [1]
+
+project_name
+	slash_project [2]
+
+public_availability_state
+	slash_dataset [17]
+
+resource_path
+	slash_dataset [3]
+
+scale_factor_x
+	slash_dataset [18]
+
+scale_factor_y
+	slash_dataset [19]
+
+scale_factor_z
+	slash_dataset [20]
+
+slash_dataset_to_mission
+	slash_dataset_to_mission [0]
+
+slash_pic_id
+	slash_annotation [9]
+
+sproject_id
+	slash_dataset [1]
+	slash_project [0]
+
+srs_name
+	slash_geometry [7]
+	slash_srs [0]
+
+summary
+	slash_project [3]
+
+transformed_sdo
+	slash_geometry [8]
+
+transformed_z_index
+	slash_geometry [9]
+
+tree_id
+	slash_annotation_tree [0]
+
+user_id
+	slash_geometry [2]
+	slash_user [0]
+
+user_name
+	slash_user [1]
+
+version_date
+	slash_annotation [13]
+
+version_id
+	slash_applicatoin_data [4]
+
+version_nickname
+	slash_annotation [14]
+
+version_number
+	slash_annotation [12]
+
+width
+	slash_dataset [24]
+
+x_pixel_space
+	slash_dataset [29]
+
+y_pixel_space
+	slash_dataset [30]
+
+z_index
+	slash_geometry [3]
+
+z_pixel_space
+	slash_dataset [31]
+

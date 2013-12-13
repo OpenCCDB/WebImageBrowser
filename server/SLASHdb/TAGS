@@ -1,0 +1,132 @@
+
+SLASHdb.c,1848
+int main(31,552
+static void exception_handler(132,3532
+static int get_user_id(145,3789
+static Logical delete_contour(160,4060
+static Logical get_annotation_z_levels(190,4833
+static Logical validate_name(241,5974
+static Logical update_contour(277,6905
+static Logical set_geometry_type(303,7440
+static void delete_geometry(328,7993
+static Logical delete_annotation(342,8255
+static Logical add_annotation(401,9507
+static Logical update_annotation(490,11572
+static char *generate_app_data(generate_app_data535,12715
+static char *sanitize(sanitize551,13115
+static Logical get_annotation(590,13603
+static char *encode(encode657,15590
+static Logical add_contour(680,15940
+static char *get_points(get_points735,17435
+static void add_contour_trap(758,17869
+static Logical get_sequence(771,18099
+static Logical get_dataset(789,18442
+static Logical get_objects(814,19015
+static Logical get_all_contours(884,20387
+static Logical get_contours(953,21842
+static Logical get_contour_data(1054,24289
+static void fail(1127,25866
+static int get_next_sequence(1141,26107
+void adx_store_data(1157,26352
+static void parse_points(1167,26532
+static void parse_hex(1207,27210
+static void signal_handler(1226,27444
+static void smooth(1243,27796
+static void simplify_points(1271,28336
+static Logical get_surface(1345,29587
+static Logical make_surface(1393,30414
+    typedef struct _Polygon 1405,30779
+	size_t n_points;1406,30809
+	int *xpoints;xpoints1407,30827
+	int *ypoints;ypoints1408,30842
+	struct _Polygon *next;next1409,30857
+    } Polygon, *PolygonP;PolygonP1410,30881
+static void build_indexed_triangle_list(1533,33795
+static int vindex_compare(1587,34936
+static void dump_triangles(1598,35109
+static TextBufferP create_text_buffer(1649,36476
+static void triangle_handler(1662,36758
+static void append(1753,38764
+
+SLASHdb_defs.h,2306
+#define DSID_FMT	1,0
+#define TIMEOUT 5,158
+#define DEFAULT_TIMEOUT 6,184
+#define SERVER 8,213
+#define CLIENT 9,259
+#define OBJECT_REQ_FMT	11,303
+#define OBJECT_MODEL_REQ_FMT	17,463
+#define ANNOTATION_Z_RANGE_FMT	25,664
+#define ANNOTATION_FROM_GEOMID_FMT	33,895
+#define COUNT_GEOM_FMT	39,1045
+#define COUNT_NAME_FMT	45,1183
+#define COUNT_NAME_VERSION_FMT	52,1348
+#define GET_GEOM_FMT	60,1555
+#define GET_CLOSED_FMT	70,1830
+    Query,82,2163
+    Update,83,2174
+    KeepAlive,84,2186
+} RequestType;85,2201
+    RequestType request_type;89,2235
+    pid_t client_id;91,2266
+    long ident;93,2288
+    double scale;95,2305
+    int dataset_id;96,2323
+    int model_id;97,2343
+    double x0;99,2362
+    double y0;100,2377
+    double z0;101,2392
+    double x1;102,2407
+    double y1;103,2422
+    double z1;104,2437
+} Request, *RequestP;RequestP106,2453
+    double min[min110,2494
+    double max[max111,2513
+} BoundingBox, *BoundingBoxP;BoundingBoxP113,2533
+typedef struct _Entry Entry,115,2564
+typedef struct _Entry Entry, *EntryP,EntryP115,2564
+typedef struct _Entry Entry, *EntryP, **EntryList;EntryList115,2564
+struct _Entry 117,2616
+    char *object_name;object_name119,2633
+    char *object_uri;object_uri120,2656
+    char *geometry_type;geometry_type121,2678
+    int color;122,2703
+    int annotation_id;123,2718
+    int geom_id;124,2741
+    int user_id;125,2758
+    char *application_value;application_value126,2775
+    char *md5;md5127,2804
+    int model_id;128,2819
+#define INSIDE(132,2842
+#define OVERLAPS(137,2984
+    off_t offset;142,3163
+    size_t buffer_size;143,3181
+    char *buffer;buffer144,3205
+} TextBuffer, *TextBufferP;TextBufferP145,3223
+    float *v;v148,3269
+    int index;149,3283
+    float nx;150,3298
+    float ny;151,3312
+    float nz;152,3326
+} Vertex, *VertexP, **VertexPP, **VertexList;VertexList153,3340
+typedef int Triangle[Triangle155,3387
+#define MAX_VERTICES 157,3413
+    size_t max_vertices;160,3462
+    size_t n_vertices;161,3487
+    VertexP vertex_list;162,3510
+    HashTable *vertex_table;vertex_table163,3535
+    size_t max_triangles;164,3564
+    size_t n_triangles;165,3590
+    Triangle *triangle_list;triangle_list166,3614
+} GeometryBuffer, *GeometryBufferP;GeometryBufferP167,3643
+
+build.h,19
+#define BUILD 1,0
+
+protos.h,26
+#define __PROTOS_H__2,29
+
+version.h,21
+#define VERSION 1,0
+
+SLASHdb_statics.h,0

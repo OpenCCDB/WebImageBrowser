@@ -1,0 +1,292 @@
+#define IsRelease NO
+
+PROGNAME= SLASHdb
+
+#define MajorVersion 1
+#define MinorVersion 12
+#define BugfixVersion 7
+#define Version \
+	MajorVersion"."MinorVersion"."BugfixVersion
+
+/* Do not alter the following line! */
+
+#if IsRelease == NO
+
+#define Optimize NO
+#define DebugEverything NO      /* Turn on all the following debug options */
+
+/* The following two options are mutually exclusive */
+#define MemDebug NO		/* For memory debugging */
+#define ElectricMemDebug NO	/* For memory debugging */
+
+#define GNUProfile NO
+
+#else	/* Don't dink with these */
+
+#define Optimize YES
+#define DebugEverything NO      /* Turn on all the following debug options */
+
+/* The following two options are mutually exclusive */
+#define MemDebug NO		/* For memory debugging */
+#define ElectricMemDebug NO	/* For memory debugging */
+
+#define GNUProfile NO
+
+#endif
+
+SPLSRCS	= \
+	SLASHdb.c \
+	  /* Do not delete this line */
+
+PSRCS	= \
+	  $(SPLSRCS) \
+	  /* Do not delete this line */
+
+STATICS	= $(SPLSRCS:.c=_statics.h)
+PPFILES	= $(PSRCS:.c=.PP)
+PFILES	= $(PPFILES:.PP=.P)
+
+SRCS	= \
+	  $(CGCSRCS) \
+	  $(SPLSRCS) \
+	  /* Do not delete this line */
+
+OBJS	= $(SRCS:.c=.o)
+
+VERSION	= -DMAJOR_VERSION=MajorVersion \
+	  -DMINOR_VERSION=MinorVersion \
+	  -DBUGFIX_VERSION=BugfixVersion
+
+CODEGEN	= codegen
+FIXPROTOS = fixprotos
+FDESIGN = fdesign
+
+GNUISMS		= -D__inline__= \
+		  -D__extension__= \
+		  -D__restrict= \
+		  -D__builtin_va_list=int \
+		  /* do not delete this line */
+CPROTO	= cproto
+
+#if defined( LinuxArchitecture )
+#if MemDebug
+MEMDEBUGINCLUDE	=
+MEMDEBUGLIBS	= -ldmallocth
+#endif
+AWK	= /usr/bin/awk
+ARCHINCLUDES	= -I$(HOME)/includei686	
+#endif
+
+SPLINCS	= \
+	  -I$(HOME)/include
+
+ARCHLIBLOC	= `uname -m`
+
+SPLLIBS	= \
+	  -L$(HOME)/lib -l$(ARCHLIB)$(SPLARCH) \
+	  /* Do not delete this line */
+
+MAKE	= gmake
+TRUE	= /bin/true
+
+#define Version MajorVersion"."MinorVersion"."BugfixVersion
+
+#if DebugEverything
+#undef Optimize
+#define Optimize NO
+#undef MemDebug
+#define MemDebug YES		/* For memory debugging */
+#endif
+
+BROWSER	= -DBROWSER=\"firefox\"
+
+#if GNUProfile
+#undef Optimize
+#define Optimize NO
+CCOPTIONS	= -fprofile-arcs -ftest-coverage 
+#endif
+
+#if MemDebug
+MEMDEBUGOPTIONS	= -DMEMDEBUG
+#endif
+
+#if ElectricMemDebug
+#if MemDebug
+error -- Cannot have both "ElectricMemDebug" and "MemDebug" defined!
+#else
+MEMDEBUGLIBS	= -lefence
+#endif
+#endif
+
+#if IsRelease == NO
+DEBUG	= -DDEBUG
+#endif
+
+BINDIR		= /usr/local/bin
+#if Optimize
+OPTIMIZER	= -O6
+#else
+OPTIMIZER	=
+#endif
+
+CCOPTIONS	= $(SGIABI) $(DARWIN_FLAGS)
+
+CDEBUGFLAGS	= $(GDB_FLAGS) $(OPTIMIZER)
+CC		= mpicc 
+LDPOSTLIB = 
+LDPOSTLIBS = 
+INCLUDES	= \
+		  -I. \
+		  $(SPLINCS) \
+		  -I/usr/include/postgresql \
+		  $(MEMDEBUGINCLUDE) \
+		  $(ARCHINCLUDES) \
+		  /* Do not delete this line */
+
+#if !defined( LinuxArchitecture )
+DEPENDINCS	= \
+		  -I/usr/local/include \
+		  /* Do not delete this line */
+#endif
+DEPENDFLAGS	= \
+		  $(DEPENDINCS) \
+		  /* Do not delete this line */
+
+
+EXTRA_DEFINES	= \
+		  $(PORTNAME) \
+		  /* Do not delete this line */
+
+EXTRA_LIBRARIES	= $(MEMDEBUGLIBS) \
+		  $(THREADLIB) \
+		  $(COMPAT) \
+		  $(SOLARIS_PTHREAD) \
+		  $(SPLLIBS) \
+		  $(SOCKET) \
+		  -lm
+
+GL		= $(GLSTATIC) \
+		  -lGLU \
+		  -lGL \
+		  $(GLDYNAMIC)
+
+#CC		= gcc -gdwarf-3 -std=gnu99 $(PTHREAD) -O0 -D_THREAD_SAFE -g -Wl,--build-id
+CC		= gcc -std=gnu99 $(PTHREAD) -O0 -D_THREAD_SAFE -g
+#LC		= gcc -g -gdwarf-3 -Wl,--build-id
+LC		= gcc -g
+CCOPTIONS	= `getconf LFS_CFLAGS` \
+		   $(LINUX64) $(BITS)
+LPR		= -DLPR_COMMAND=\"/usr/bin/lpr\"
+DEFAULT_SCRATCH	= -DDEFAULT_SCRATCH_DIRECTORY=\"/var/tmp\"	
+THREADLIB	= 
+#if BuildStatic
+STATIC		= -Xlinker -Bstatic
+DYNAMIC		= -Xlinker -Bdynamic
+#endif
+
+SYS_LIBRARIES	= \
+		  -L$(HOME)/lib \
+		  -lsplweb \
+		  -lsplxml \
+		  -lsplhttp \
+		  -lsplpq \
+		  -lcurl \
+		  -lpq \
+		  -lz \
+		  -lbjhash \
+		  /* do not delete this line */
+
+OSMAJOR		= -DOSMAJOR=OSMajorVersion
+OSMINOR		= -DOSMINOR=OSMinorVersion
+OSVERSION	= $(OSMAJOR) $(OSMINOR)
+
+.SUFFIXES:	 .o .P .PP _statics.h
+.PRECIOUS:	%.PP
+
+.$(VERBOSE)SILENT:
+
+.c.PP:
+	echo " " > $@
+	echo "/* $< */" >> $@
+	echo " " >> $@
+	if [ \! -f protos.h ] ; then { \
+		touch .fake protos.h ; \
+	} ; \
+	fi
+	if [ \! -f $*_statics.h ] ; then { \
+		touch .fake_statics $*_statics.h ; \
+	} ; \
+	fi
+	echo Making $*.PP
+	$(CPROTO) -s $(GNUISMS) $(ALLDEFINES) $< | \
+		grep -v "static int fstat" | \
+		grep -v "static int stat" | \
+		grep -v "__bswap_" | \
+		sed "s/struct _iobuf/FILE/g" | \
+		tail -n +2 > $*.PP
+	if [ -f .fake ] ; then { \
+		rm -f .fake protos.h ; \
+	} ; \
+	fi
+	if [ -f .fake_statics ] ; then { \
+		rm -f .fake_statics $*_statics.h ; \
+	} ; \
+	fi
+
+.PP.P:
+	grep -v "^static" $< > $*.P || $(TRUE)
+
+.PP_statics.h:
+	grep "^static" $< | $(FIXPROTOS) > $@ || $(TRUE)
+	if [ -f $@ ] ; then { \
+		echo Made new $@ ; \
+	} ; \
+	fi
+	
+.c.o:
+	echo Compiling $<
+	$(CC) $(CFLAGS) $< -c
+
+.fd.c:
+	$(FDESIGN) -compensate -I $*_defs.h -convert $*
+
+build.h::	$(SRCS)
+	echo '#define BUILD "'`date`'"' > build.h
+
+all::	version.h build.h $(FDCSRCS) $(PVTFDCSRCS) $(CGCSRCS) protos.h
+
+depend::	$(FDCSRCS) $(PVTFDCSRCS) $(CGCSRCS) $(STATICS) protos.h
+depend::	version.h build.h
+
+depend::
+	etags *.c *.h
+
+version.h::	Imakefile
+	echo '#define VERSION "'Version'"' > version.h
+
+ComplexProgramTarget($(PROGNAME))
+
+protos.h:	$(PFILES)
+	echo \#if \!defined\( __PROTOS_H__ \) > $@.temp
+	echo \#define __PROTOS_H__ >> $@.temp
+	echo "" >> $@.temp
+	$(FIXPROTOS) $(PFILES) >> $@.temp
+	echo \#endif >> $@.temp
+	if [ \! -f $@ ] ; then { \
+		touch $@ ; \
+	} ; \
+	fi
+	if cmp -s $@.temp $@ ; then \
+		rm -f $@.temp ; \
+	else { \
+		echo Made new $@ ; \
+		mv $@.temp $@ ; \
+	} ; \
+	fi
+
+clean::
+	$(RM) *_statics.h *.P *.PP news.h protos.h
+
+distclean::
+	make clean
+	$(RM) Makefile

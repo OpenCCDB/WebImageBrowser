@@ -1,0 +1,88 @@
+From wawong@gmail.com  Thu Apr 18 18:05:57 2013
+Return-Path: <wawong@gmail.com>
+X-Spam-Checker-Version: SpamAssassin 3.1.9 (2007-02-13) on mail.ncmir.ucsd.edu
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.1 required=5.0 tests=AWL,BAYES_00,HTML_MESSAGE
+	autolearn=ham version=3.1.9
+X-Original-To: spl@ncmir.ucsd.edu
+Delivered-To: spl@ncmir.ucsd.edu
+Received: from bigiron.ncmir.ucsd.edu (bigiron.ucsd.edu [132.239.131.209])
+	by mail.ncmir.ucsd.edu (Postfix) with ESMTP id DE39CD090C
+	for <spl@ncmir.ucsd.edu>; Thu, 18 Apr 2013 18:05:57 -0700 (PDT)
+X-IronPort-Anti-Spam-Filtered: true
+X-IronPort-Anti-Spam-Result: AhYCAGaXcFHRVYA0m2dsb2JhbABQDsQPfwgWDgEBAQEBBgsLCRQoghZQARsdAQMSCAEHA1oBEQEFASKIFAEDD59OjC+Ce4R5ChknDVmIfgEFDI8Mg04DiQeOAI8yFimDb18c
+Received: from mail-qe0-f52.google.com ([209.85.128.52])
+  by bigiron.ncmir.ucsd.edu with ESMTP; 18 Apr 2013 18:05:57 -0700
+Received: by mail-qe0-f52.google.com with SMTP id jy17so2268029qeb.39
+        for <spl@ncmir.ucsd.edu>; Thu, 18 Apr 2013 18:05:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20120113;
+        h=mime-version:x-received:date:message-id:subject:from:to:cc
+         :content-type;
+        bh=VwUD3aOFOTqo25q0h1KDmPRGCL5yGegh3Q/zonPk2XU=;
+        b=FgRqnrAly8fibu4rUs2eAVrPQYtnB3CSiRNdtmkMx90i2Y2mFsvMSXu1r88FroXL9u
+         IPpvh/HT8yigwpKGnoPww0XbeGp2nGnYxhhnlvcB9Zfok2OlQn2Wc8BMfgFYDu1//vy7
+         m5N8yAvTrAsM9pfmaBQLnIvJTPscPqZq1ax/Ktit9c/1YJSdpDr+YQJh19jpb5iXWcUB
+         KCsu9gtUVav9b/Ugo4Ixa90MpK14f8oywSJcC+3ppYs7iaYDnXCaMojlSd+uXDexT3Tb
+         rHp6BA2Joeyx3+ZuboUVntIw0GQvc70ZF/x0IQkZgRIE/4Sw8wKYNRhf/xzmSRZMlFuZ
+         BffQ==
+MIME-Version: 1.0
+X-Received: by 10.229.18.83 with SMTP id v19mr981404qca.127.1366333556959;
+ Thu, 18 Apr 2013 18:05:56 -0700 (PDT)
+Received: by 10.49.61.69 with HTTP; Thu, 18 Apr 2013 18:05:56 -0700 (PDT)
+Date: Thu, 18 Apr 2013 18:05:56 -0700
+Message-ID: <CAB=tj0obQwb=x8XuLmagevPH1Ygf2Ee-hdZORYoeHmaD_-rtLw@mail.gmail.com>
+Subject: Zoomify database update
+From: willy wong <wawong@gmail.com>
+To: Steve Lamont <spl@ncmir.ucsd.edu>
+Cc: Rick Giuly <rgiuly@gmail.com>
+Content-Type: multipart/alternative; boundary=0015176f0dd64eb74404daac52bc
+Status: RO
+
+--0015176f0dd64eb74404daac52bc
+Content-Type: text/plain; charset=ISO-8859-1
+
+Hi Steve,
+
+Please use the following SQL statements for the zoomify_images:
+
+//find the zoomify folder
+select zoomify_folder from slash_dataset where dataset_id = 281472
+
+//Update the zoomify folder
+update slash_dataset set zoomify_folder =
+'/ccdbprod/ccdbprod0/home/CCDB_DATA_USER.portal/CCDB_DATA_USER/acquisition/project_1/microscopy_35/rick.rec',
+zoomify_date = now() where dataset_id = 281472
+
+//If the data does not have a record in the slash dataset yet, then insert
+a new record
+insert into slash_dataset(dataset_id, sproject_id, dataset_name,
+resource_path,actual_location, width, height,
+num_of_slides) values( nextval('general_sequence'), 7,
+'dataset_name','IRODS_PATH', 'LOCAL_Path', 700,700,30)
+
+
+Thanks,
+Willy
+
+--0015176f0dd64eb74404daac52bc
+Content-Type: text/html; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
+
+Hi Steve,<div><br></div><div>Please use the following SQL statements for th=
+e zoomify_images:</div><div><br></div><div>//find the zoomify folder</div><=
+div><div>select zoomify_folder from slash_dataset where dataset_id =3D 2814=
+72</div>
+<div><br></div><div>//Update the zoomify folder</div><div>update slash_data=
+set set zoomify_folder =3D &#39;/ccdbprod/ccdbprod0/home/CCDB_DATA_USER.por=
+tal/CCDB_DATA_USER/acquisition/project_1/microscopy_35/rick.rec&#39;,</div>
+<div>zoomify_date =3D now() where dataset_id =3D 281472</div><div><br></div=
+><div>//If the data does not have a record in the slash dataset yet, then i=
+nsert a new record</div><div>insert into slash_dataset(dataset_id, sproject=
+_id, dataset_name, resource_path,actual_location, width, height,=A0</div>
+<div>num_of_slides) values( nextval(&#39;general_sequence&#39;), 7, &#39;da=
+taset_name&#39;,&#39;IRODS_PATH&#39;, &#39;LOCAL_Path&#39;, 700,700,30)</di=
+v></div><div><br></div><div><br></div><div>Thanks,<br>Willy</div>
+
+--0015176f0dd64eb74404daac52bc--
+

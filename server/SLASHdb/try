@@ -1,0 +1,23 @@
+#!/bin/tcsh -f
+
+if ( -e Makefile == 0 ) then
+
+    xmkmf -a
+    set s = $status
+    if ( $s != 0 ) then
+
+	exit $s
+
+    endif
+
+endif
+
+make
+set s = $status
+if ( $s != 0 ) then
+
+    exit $s
+
+endif
+
+./go

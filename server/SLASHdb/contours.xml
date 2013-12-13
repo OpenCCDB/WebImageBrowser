@@ -1,0 +1,12 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<root z="0" elapsed_seconds="0.168984" process_id="3675" status="success">
+  <annotation color="15371520" id="1239453" object_name="test1239453">
+    <geometry geometry_id="1239452" user_name="ccdbuser" geometry_type="polygon" md5="da2dd3134d9d99356c58fd233cd90d15"/>
+  </annotation>
+  <annotation color="15371520" id="1240122" object_name="test1240122">
+    <geometry geometry_id="1240121" user_name="ccdbuser" geometry_type="polygon" md5="fb8d9366c091c8cc55d9219dc3096904"/>
+  </annotation>
+  <annotation color="15371520" id="1240200" object_name="test1240200">
+    <geometry geometry_id="9927039" user_name="cytoseg_user" geometry_type="polyline" md5="d936459e0bf11a4abf924eb6ae383c78"/>
+  </annotation>
+</root>
