@@ -1,0 +1,240 @@
+#define TargetName SLASHlink
+
+#define MajorVersion 1
+#define MinorVersion 0
+#define BugfixVersion 8
+
+#define Version MajorVersion"."MinorVersion"."BugfixVersion
+
+#define Optimize NO
+
+#define ElectricDebugMemory NO
+
+#define IHaveSubdirs NO
+#define PassCDebugFlags
+
+CCOPTIONS	=
+
+SPLSRCS = \
+         SLASHlink.c \
+	/* do not delete this line */
+
+YSRCS	= \
+	  /* do not delete this line */
+
+LSRCS	= \
+	  /* do not delete this line */
+
+MISCSRCS= \
+	  /* do not delete this line */
+
+SUBDIRS	= \
+	  /* do not delete this line */
+
+#	No user servicable parts below here.
+#	Consult a trained technician.
+
+PSRCS	= $(SPLSRCS)
+
+STATICS	= $(SPLSRCS:.c=_statics.h)
+PPFILES	= $(PSRCS:.c=.PP)
+PFILES	= $(PPFILES:.PP=.P)
+YCSRCS	= $(YSRCS:.y=.c)
+LCSRCS	= $(LSRCS:.l=.c)
+#Y	= $(YSRCS:.y=)
+#L	= $(LSRCS:.l=)
+
+SRCS	= $(YCSRCS) \
+	  $(LCSRCS) \
+	  $(MISCSRCS) \
+	  $(SPLSRCS)
+
+LOCAL_LDFLAGS =
+OBJS	= $(SRCS:.c=.o)
+
+LEX     = flex
+YACC    = bison
+YFLAGS  = -dty
+
+#if ElectricDebugMemory
+
+MEMDEBUGOPTIONS	= 
+MEMDEBUGINCLUDE	=
+MEMDEBUGLIBS	= -lefence
+
+#endif
+
+#if Optimize
+OPTIMIZER	= -O4
+#else
+OPTIMIZER	= -O0
+#endif
+BINDIR		= /usr/local/bin
+CDEBUGFLAGS	= -g $(OPTIMIZER) $(XDEBUG_FLAG)
+CC		= gcc -std=gnu99 -pthread
+LDPOSTLIB	=
+LDPOSTLIBS	=
+
+INCLUDES	= $(MEMDEBUGINCLUDE) \
+		  -I/usr/local/include/db48 \
+		  -I$(HOME)/include \
+		  -I/usr/include/postgresql \
+		  /* don't remove this line */
+
+#if !defined( LinuxDistribution )
+LOCAL_INCLUDE_PATH = -I/usr/local/include
+#endif
+DEPEND_DEFINES	= \
+		  $(LOCAL_INCLUDE_PATH) \
+		  /* don't remove this line */
+
+LOCAL_LDFLAGS	+=-L$(HOME)/lib \
+		  /* don't remove this line */
+
+DEPLIBS		= \
+		  /* don't remove this line */
+
+EXTRA_LIBRARIES	+=\
+		  $(MEMDEBUGLIBS) \
+		  -lsplimage \
+		  -lsplclientio \
+		  -lsplweb \
+		  -lsplxml \
+		  -lsplhttp \
+		  -l$(ARCHLIB) \
+		  -lbjhash \
+		  -lRodsAPIs \
+		  -lftp \
+		  -lcurl \
+		  -ljpeg \
+		  -ltiff \
+		  -lpng \
+		  -lcrypto \
+		  -lssl \
+		  -lm \
+		  /* don't remove this line */
+
+STATIC	= -Xlinker -Bstatic
+DYNAMIC	= -Xlinker -Bdynamic
+
+IMAKE_DEFINES	= \
+		  -DTargetName=TargetName \
+		  -DYaccLexNeeded=YaccLexNeeded \
+		  -DDebugMemory=DebugMemory \
+		  -DElectricDebugMemory=ElectricDebugMemory \
+		  -DOptimize=Optimize \
+		  /* don't remove this line */
+
+STD_INCLUDES	=
+
+VERSION	= -DMAJOR_VERSION=MajorVersion \
+	  -DMINOR_VERSION=MinorVersion \
+	  -DBUGFIX_VERSION=BugfixVersion
+
+DEFINES		= \
+		  $(MEMDEBUGOPTIONS) \
+		  $(VERSION) \
+		  /* Don't remove this line */
+
+YACC_BASE	= $(YSRCS:.y=)
+LEX_BASE	= $(LSRCS:.l=)
+
+.SUFFIXES:	 .o .fd .cg .P .PP _statics.h .tg .l .y
+.PRECIOUS:	%.PP
+.$(VERBOSE)SILENT:
+
+GNUISMS		= -D__inline__= \
+		  -D__extension__= \
+		  -D__restrict= \
+		  -D__builtin_va_list=int \
+		  /* do not delete this line */
+
+.c.PP:
+	echo " " > $@
+	echo "/* $< */" >> $@
+	echo " " >> $@
+	if [ \! -f protos.h ] ; then { \
+		touch .fake protos.h ; \
+	} ; \
+	fi
+	if [ \! -f $*_statics.h ] ; then { \
+		touch .fake_statics $*_statics.h ; \
+	} ; \
+	fi
+	echo making $*.PP
+	cproto -s $(GNUISMS) $(DEFINES) $(ALLINCLUDES) $< | \
+		grep -v "static int fstat" | \
+		grep -v "static int stat" | \
+		grep -v "__bswap_16" | \
+		grep -v "__bswap_32" | \
+		grep -v "__bswap_64" | \
+		sed "s/struct _iobuf/FILE/g" | \
+		tail -n +2 > $*.PP
+	if [ -f .fake ] ; then { \
+		rm -f .fake protos.h ; \
+	} ; \
+	fi
+	if [ -f .fake_statics ] ; then { \
+		rm -f .fake_statics $*_statics.h ; \
+	} ; \
+	fi
+
+.PP.P:
+	grep -v "^static" $< > $*.P || true
+
+.PP_statics.h:
+	grep "^static" $< | fixprotos > $@ || true
+	if [ \! -f $@ ] ; then { \
+		echo Made new $@ ; \
+	} ; \
+	fi
+	
+.c.o:
+	echo Compiling $<
+	$(CC) $(CFLAGS) $< -c
+
+#if YaccLexNeeded
+YaccFile(rc_grammar,$(YFLAGS))
+LexFile(rc_lexxer)
+#endif
+
+depend::	build.h version.h $(STATICS) protos.h
+
+MakeSubdirs($(SUBDIRS))
+DependSubdirs($(SUBDIRS))
+
+ComplexProgramTarget(TargetName)
+
+include:: build.h version.h
+build.h:	Imakefile $(SPLSRCS)
+	echo '#define BUILD "'`date`'"' > build.h
+
+version.h:	Imakefile $(SPLSRCS)
+	echo '#define VERSION "'Version'"' > version.h
+
+protos.h:	$(PFILES)
+	fixprotos $(PFILES) > $@.temp
+	if [ \! -f $@ ] ; then { \
+		echo $@ does not exist ; \
+		touch $@ ; \
+	} ; \
+	fi
+	if cmp -s $@.temp $@ ; then \
+		echo Did not need new $@ ; \
+		rm -f $@.temp ; \
+	else { \
+		echo Made new $@ ; \
+		mv $@.temp $@ ; \
+	} ; \
+	fi
+
+clean::
+	$(RM) $(FDCSRCS) $(CGCSRCS) $(TGCSRCS)
+	$(RM) protos.h protos.h.temp build.h version.h
+	$(RM) $(YCSRCS) $(LCSRCS) *.P *.PP
+
+distclean::
+	make clean
+	$(RM) Makefile
+
+all::	build.h version.h

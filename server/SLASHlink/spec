@@ -1,0 +1,43 @@
+# This is the spec file for SLASHlink
+
+%define _topdir	 	/tmp/SLASHlink
+%define name			SLASHlink 
+define major 2
+%define minor 8
+%define bugfix 7
+%define release		1
+%define version 	%{major}.%{minor}.%{bugfix}
+%define buildroot %{_topdir}/%{name}-%{version}-root
+
+BuildRoot:	%{buildroot}
+Summary: 		NCMIR SLASHlink
+License: 		GPL
+Name: 			%{name}
+Version: 		%{version}
+Release: 		%{release}
+Source: 		%{name}-%{version}.tgz
+Prefix: 		/usr
+Group: 			Tools
+
+%description
+Provides information on INCF atlases
+
+%prep
+%setup -q
+
+%build
+xmkmf -a
+make
+
+%install
+make DESTDIR=%{buildroot} install 
+mkdirhier %{buildroot}/var/www/html/WebImageBrowser/cgi-bin
+mkdirhier %{buildroot}/var/www/html/WebImageBrowser/SLASH
+cp SLASHlink.pl %{buildroot}/var/www/html/WebImageBrowser/cgi-bin
+
+%files
+%defattr(-,root,root)
+/usr/local/bin/SLASHlink
+/var/www/html/WebImageBrowser/cgi-bin/SLASHlink.pl
+/var/www/html/WebImageBrowser/SLASH
+%attr(0777,root,root) /var/www/html/WebImageBrowser/SLASH

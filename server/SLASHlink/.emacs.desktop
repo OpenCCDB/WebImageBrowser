@@ -1,0 +1,238 @@
+;; -*- mode: emacs-lisp; coding: emacs-mule; -*-
+;; --------------------------------------------------------------------------
+;; Desktop File for Emacs
+;; --------------------------------------------------------------------------
+;; Created Sun Jul 21 14:30:47 2013
+;; Desktop file format version 206
+;; Emacs version 23.3.1
+
+;; Global section:
+(setq desktop-missing-file-warning nil)
+(setq tags-file-name nil)
+(setq tags-table-list nil)
+(setq search-ring nil)
+(setq regexp-search-ring nil)
+(setq register-alist nil)
+(setq file-name-history nil)
+
+;; Buffer section -- buffers listed in same order as in buffer list:
+(desktop-create-buffer 206
+  "/home/spl/src/misc/SLASHlink/Imakefile"
+  "Imakefile"
+  'text-mode
+  '(auto-fill-mode)
+  100
+  '(4346 t)
+  nil
+  nil
+  '((buffer-file-coding-system . raw-text-unix)))
+
+(desktop-create-buffer 206
+  "/home/spl/src/misc/SLASHlink/go"
+  "go"
+  'sh-mode
+  nil
+  512
+  '(480 t)
+  nil
+  nil
+  '((buffer-file-coding-system . raw-text-unix)))
+
+(desktop-create-buffer 206
+  "/home/spl/src/misc/SLASHlink/SLASHlink.c"
+  "SLASHlink.c"
+  'c-mode
+  '(abbrev-mode)
+  2354
+  '(3753 t)
+  nil
+  nil
+  '((buffer-file-coding-system . raw-text-unix)))
+
+(desktop-create-buffer 206
+  "/home/spl/src/libraries/libsplweb/client_server.c"
+  "client_server.c"
+  'c-mode
+  '(abbrev-mode)
+  2060
+  '(2529 t)
+  nil
+  nil
+  '((buffer-file-coding-system . undecided-unix)))
+
+(desktop-create-buffer 206
+  "/home/spl/src/libraries/libspl/libspl.c"
+  "libspl.c"
+  'c-mode
+  '(abbrev-mode)
+  14138
+  '(nil nil)
+  nil
+  nil
+  '((buffer-file-coding-system . raw-text-unix)))
+
+(desktop-create-buffer 206
+  "/home/spl/src/libraries/libspl/Imakefile"
+  "Imakefile<2>"
+  'text-mode
+  '(auto-fill-mode)
+  67
+  '(4148 t)
+  nil
+  nil
+  '((buffer-file-coding-system . raw-text-unix)))
+
+(desktop-create-buffer 206
+  "/home/spl/src/misc/SLASHlink/spec"
+  "spec"
+  'text-mode
+  '(auto-fill-mode)
+  927
+  '(939 t)
+  nil
+  nil
+  '((buffer-file-coding-system . raw-text-unix)))
+
+(desktop-create-buffer 206
+  "/home/spl/include/spl.h"
+  "spl.h"
+  'c-mode
+  '(abbrev-mode)
+  3329
+  '(4709 t)
+  t
+  nil
+  '((buffer-file-coding-system . undecided-unix)))
+
+(desktop-create-buffer 206
+  "/home/spl/include/splxml.h"
+  "splxml.h"
+  'c-mode
+  '(abbrev-mode)
+  1
+  '(1871 t)
+  t
+  nil
+  '((buffer-file-coding-system . undecided-unix)))
+
+(desktop-create-buffer 206
+  "/usr/include/openssl/md4.h"
+  "md4.h"
+  'c-mode
+  '(abbrev-mode view-mode)
+  3521
+  '(nil nil)
+  t
+  nil
+  '((buffer-file-coding-system . undecided-unix)))
+
+(desktop-create-buffer 206
+  "/usr/include/openssl/md5.h"
+  "md5.h"
+  'c-mode
+  '(abbrev-mode view-mode)
+  3264
+  '(4380 t)
+  t
+  nil
+  '((buffer-file-coding-system . undecided-unix)))
+
+(desktop-create-buffer 206
+  "/home/spl/src/misc/SLASHlink/SLASHlink.pl"
+  "SLASHlink.pl"
+  'perl-mode
+  nil
+  127
+  '(98 t)
+  nil
+  nil
+  '((buffer-file-coding-system . raw-text-unix)))
+
+(desktop-create-buffer 206
+  "/home/spl/src/imaging/ctalign/warp.pl"
+  "warp.pl"
+  'perl-mode
+  nil
+  82
+  '(82 t)
+  nil
+  nil
+  '((buffer-file-coding-system . raw-text-unix)))
+
+(desktop-create-buffer 206
+  "/home/spl/src/imaging/ctalign/ctalign.c"
+  "ctalign.c"
+  'c-mode
+  '(abbrev-mode)
+  266
+  '(245 t)
+  nil
+  nil
+  '((buffer-file-coding-system . undecided-unix)))
+
+(desktop-create-buffer 206
+  "/home/spl/src/imaging/ctalign/ctalign.h"
+  "ctalign.h"
+  'c-mode
+  '(abbrev-mode)
+  1
+  '(1879 t)
+  nil
+  nil
+  '((buffer-file-coding-system . undecided-unix)))
+
+(desktop-create-buffer 206
+  "/home/spl/src/imaging/ctalign/add_mark.c"
+  "add_mark.c"
+  'c-mode
+  '(abbrev-mode)
+  3108
+  '(3068 t)
+  nil
+  nil
+  '((buffer-file-coding-system . undecided-unix)))
+
+(desktop-create-buffer 206
+  "/home/spl/include/splweb.h"
+  "splweb.h"
+  'c-mode
+  '(abbrev-mode)
+  1
+  '(nil nil)
+  t
+  nil
+  '((buffer-file-coding-system . undecided-unix)))
+
+(desktop-create-buffer 206
+  "/home/spl/src/misc/SLASHlink/SLASHlink.h"
+  "SLASHlink.h"
+  'c-mode
+  '(abbrev-mode)
+  86
+  '(1 t)
+  nil
+  nil
+  '((buffer-file-coding-system . raw-text-unix)))
+
+(desktop-create-buffer 206
+  "/home/spl/src/imaging/ctalign/process_fiducial.c"
+  "process_fiducial.c"
+  'c-mode
+  '(abbrev-mode)
+  2744
+  '(nil nil)
+  nil
+  nil
+  '((buffer-file-coding-system . undecided-unix)))
+
+(desktop-create-buffer 206
+  "/home/spl/src/imaging/ctalign/worker.c"
+  "worker.c"
+  'c-mode
+  '(abbrev-mode)
+  2579
+  '(nil nil)
+  nil
+  nil
+  '((buffer-file-coding-system . undecided-unix)))
+
